@@ -1,4 +1,5 @@
 #-*- encoding:utf8 -*-
+from _dummy_thread import exit
 
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -41,23 +42,34 @@ if __name__=="__main__":
         print("_____사용자 정보를 입력해주세요_____")
 
         # ID, PW
-        userID = input("ID : ")
-        userPW = input("PW : ")
+        userID = input("ID : ").strip()
+        userPW = input("PW : ").strip()
+        #userID = "wm5256"
+        #userPW = "qkrwm207@"
 
         # 주민등록번호
-        userNum = input("주민등록번호 앞자리 : ")
+        userNum = input("주민등록번호 앞자리 : ").replace(" ", "")
+        print(userNum)
+        #userNum = "990122"
+
+        # 주민드록번호 유효성검사
+        if len(userNum) != 6 : exit()
 
         # 상품 정보
         print("______상품 정보를 입력해주세요______")
 
         # 상품명
-        userSearch = input("상품명 : ")
+        userSearch = input("상품명 : ").strip()
 
         # 날짜 정보
-        userDate = input("날짜(YYYYMMDD) : ")
+        userDate = input("날짜(YYYYMMDD) : ").replace(" ", "")
+        #userDate = "1111111111"
 
-        # 입력값의 유효성검사를 한다.
+        # 날짜 정보 유효성검사
         now = time.localtime()
+        if len(userDate) != 8 :
+            # 8자리로 입력하지 않았을 경우
+            userDate = "%04d%02d%02d" % (now.tm_year, now.tm_mon, now.tm_mday)
         if (int(userDate[4:6]) <= 12) & (1 <= int(userDate[4:6])) != True :
             # 1월 ~ 12월이 아닐 경우
             userDate = "%04d%02d%02d" % (now.tm_year, now.tm_mon, now.tm_mday)
@@ -69,13 +81,16 @@ if __name__=="__main__":
             userDate = "%04d%02d%02d" % (now.tm_year, now.tm_mon, now.tm_mday)
 
         # 회차
-        userTime = input("회차 (n회차) : ")
+        userTime = input("회차 (n회차) : ").strip()
+        #userTime = "1회차"
 
         # 할인 정보
-        userTicket = input("할인 : ")
+        userTicket = input("할인 : ").strip()
+        #userTicket = "일반"
 
         # 은행 정보
-        userBank = input("은행 : ")
+        userBank = input("은행 : ").strip()
+        #userBank = "신한은행"
         if userBank.find("농협") != -1 : userBank = 38052
         elif userBank.find("중앙") != -1 : userBank = 38052
         elif userBank.find("국민") != -1 : userBank = 38051
@@ -135,6 +150,13 @@ if __name__=="__main__":
 
     # 예매창 객체 받아오기
         driver.switch_to.window(driver.window_handles[1])
+
+        # 맴버십이십니까? 일반회원입니다.
+        try:
+            driver.find_element_by_xpath("//img[@alt='일반회원 구매']").click()
+            driver.switch_to.window(driver.window_handles[1])
+        except:
+            elem = ''
 
         # 닫기 버튼 누르기 (만 n세 미만)
         try:
@@ -324,7 +346,7 @@ if __name__=="__main__":
                     try:
                         # 좌석이 있을 경우
                         # 좌석 선택하기
-                        driver.execute_script(seat['onclick'] + ";")
+                        driver.execute_script(seat['ㅁㅁ'] + ";")
 
                         # 2단계 프레임 받아오기
                         driver.switch_to.default_content()
@@ -830,7 +852,7 @@ if __name__=="__main__":
         driver.switch_to.window(driver.window_handles[0])
 
         # 마이페이지로 이동
-        elem = driver.find_element_by_xpath("//div[@class='login']//a[@class='btn']")
+        elem = driver.find_element_by_xpath('//li[@class="mypage"]/a')
         elem.click()
 
         # 활동로그
