@@ -124,8 +124,7 @@ if __name__=="__main__":
 
     # 예매하기_1
         # 예매하기 _2 로 이동하기
-        elem = driver.find_element_by_xpath("//div[@class='btn_Wrap']//a[3]")
-        elem.click()
+        driver.find_element_by_xpath("//div[@class='Poster']//img").click()
 
     # 예매하기_2
         # 예매창 열기
@@ -333,7 +332,7 @@ if __name__=="__main__":
                         driver.switch_to.frame(frame)
 
                         # 3단계 넘어가기
-                        driver.execute_script("javascript:fnSelect();")
+                        #driver.execute_script("javascript:fnSelect();")
 
                         # 활동로그
                         log("빈좌석 찾기 성공")
@@ -420,7 +419,7 @@ if __name__=="__main__":
                             driver.switch_to.frame(frame)
 
                             # 3단계 넘어가기
-                            driver.execute_script("javascript:fnSelect();")
+                            #driver.execute_script("javascript:fnSelect();")
 
                             # 활동로그
                             log("빈좌석 찾기 성공")
@@ -473,7 +472,7 @@ if __name__=="__main__":
                         driver.switch_to.frame(frame)
 
                         # 3단계 넘어가기
-                        driver.execute_script("javascript:fnSelect();")
+                        #driver.execute_script("javascript:fnSelect();")
 
                         # 활동로그
                         log("빈좌석 찾기 성공")
