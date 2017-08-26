@@ -1,5 +1,4 @@
 #-*- encoding:utf8 -*-
-from _dummy_thread import exit
 
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -39,18 +38,17 @@ if __name__=="__main__":
     try:
     # 사용자 입력 받기
         # 사용자 정보
-        print("_____사용자 정보를 입력해주세요_____")
+        #print("_____사용자 정보를 입력해주세요_____")
 
         # ID, PW
-        userID = input("ID : ").strip()
-        userPW = input("PW : ").strip()
-        #userID = "wm5256"
-        #userPW = "qkrwm207@"
+        #userID = input("ID : ").strip()
+        #userPW = input("PW : ").strip()
+        userID = "wm5256"
+        userPW = "qkrwm207@"
 
         # 주민등록번호
-        userNum = input("주민등록번호 앞자리 : ").replace(" ", "")
-        print(userNum)
-        #userNum = "990122"
+        #userNum = input("주민등록번호 앞자리 : ").replace(" ", "")
+        userNum = "990122"
 
         # 주민드록번호 유효성검사
         if len(userNum) != 6 : exit()
@@ -81,16 +79,16 @@ if __name__=="__main__":
             userDate = "%04d%02d%02d" % (now.tm_year, now.tm_mon, now.tm_mday)
 
         # 회차
-        userTime = input("회차 (n회차) : ").strip()
-        #userTime = "1회차"
+        #userTime = input("회차 (n회차) : ").strip()
+        userTime = "1회차"
 
         # 할인 정보
-        userTicket = input("할인 : ").strip()
-        #userTicket = "일반"
+        #userTicket = input("할인 : ").strip()
+        userTicket = "재관람"
 
         # 은행 정보
-        userBank = input("은행 : ").strip()
-        #userBank = "신한은행"
+        #userBank = input("은행 : ").strip()
+        userBank = "하나은행"
         if userBank.find("농협") != -1 : userBank = 38052
         elif userBank.find("중앙") != -1 : userBank = 38052
         elif userBank.find("국민") != -1 : userBank = 38051
@@ -133,6 +131,13 @@ if __name__=="__main__":
 
         # 검색 버튼 누르기
         driver.execute_script('Nav_Search(); return false;')
+
+        # 검색 상위 오류
+        try:
+            alert = driver.switch_to_alert()
+            alert.accept()
+        except:
+            elem = ''
 
         # 활동로그
         log(userSearch + " 검색")
@@ -271,7 +276,6 @@ if __name__=="__main__":
                 #print(Captcha['src'])
 
                 # Captcha.jpg 만들기
-                #captchaUrl = Captcha
                 urlretrieve(Captcha, "captcha.jpg")
                 cleanImage("captcha.jpg")
 
@@ -325,12 +329,13 @@ if __name__=="__main__":
         if elem != None :
             # 미니맵이 존재할 경우
             # 구역 리스트 받아오기
-            stepList = bs4.findAll('area')
+            areaList = bs4.findAll('area')
 
             # 빈 좌석 찾기
             seatch = False
             while seatch != True :
                 for i in range(0, len(bs4.findAll('area')) + 1) :
+                    print(i)
                     # 좌석 프레임 받아오기
                     driver.switch_to.default_content()
                     frame = driver.find_element_by_id('ifrmSeat')
@@ -346,7 +351,7 @@ if __name__=="__main__":
                     try:
                         # 좌석이 있을 경우
                         # 좌석 선택하기
-                        driver.execute_script(seat['ㅁㅁ'] + ";")
+                        driver.execute_script(seat['onclick'] + ";")
 
                         # 2단계 프레임 받아오기
                         driver.switch_to.default_content()
@@ -354,7 +359,7 @@ if __name__=="__main__":
                         driver.switch_to.frame(frame)
 
                         # 3단계 넘어가기
-                        #driver.execute_script("javascript:fnSelect();")
+                        driver.execute_script("javascript:fnSelect();")
 
                         # 활동로그
                         log("빈좌석 찾기 성공")
@@ -377,15 +382,20 @@ if __name__=="__main__":
 
                         # 구역 리스트 받아오기
                         bs4 = BeautifulSoup(driver.page_source, "html.parser")
-                        stepList = bs4.findAll('area')
+                        areaList = bs4.findAll('area')
 
                         # 구역 바꾸기
-                        if i == len(stepList) :
+                        if i == len(areaList) :
                             # 마지막 반복 단계
-                            driver.execute_script(stepList[0]["href"])
+                            driver.execute_script(areaList[0]["href"])
                         else :
                             # 그 외
-                            driver.execute_script(stepList[i]["href"])
+                            try:
+                                # 구역 리스트의 크기가 같을 경우
+                                driver.execute_script(areaList[i]["href"])
+                            except:
+                                # 구역 리스트의 크기가 다를 경우
+                                driver.execute_script(areaList[0]["href"])
 
                         # 페이지 로딩 대기
                         time.sleep(0.5)
@@ -394,6 +404,7 @@ if __name__=="__main__":
                         try:
                             alert = driver.switch_to_alert()
                             alert.accept()
+                            time.sleep(3)
                         except:
                             elem = ''
 
@@ -418,7 +429,7 @@ if __name__=="__main__":
                 # 빈 좌석 찾기
                 seatch = False
                 while seatch != True :
-                    for i in range(5, len(areaList)) :
+                    for i in range(0, len(areaList)) :
                         # 좌석 프레임 받아오기
                         driver.switch_to.default_content()
                         frame = driver.find_element_by_id('ifrmSeat')
@@ -441,7 +452,7 @@ if __name__=="__main__":
                             driver.switch_to.frame(frame)
 
                             # 3단계 넘어가기
-                            #driver.execute_script("javascript:fnSelect();")
+                            driver.execute_script("javascript:fnSelect();")
 
                             # 활동로그
                             log("빈좌석 찾기 성공")
@@ -465,6 +476,14 @@ if __name__=="__main__":
 
                             # 페이지 로딩 대기
                             time.sleep(0.5)
+
+                            # 좌석을 불러오기 경고창 감지
+                            try:
+                                alert = driver.switch_to_alert()
+                                alert.accept()
+                                time.sleep(3)
+                            except:
+                                elem = ''
 
             # 미니맵 = X, 구역 = X
             else :
@@ -494,7 +513,7 @@ if __name__=="__main__":
                         driver.switch_to.frame(frame)
 
                         # 3단계 넘어가기
-                        #driver.execute_script("javascript:fnSelect();")
+                        driver.execute_script("javascript:fnSelect();")
 
                         # 활동로그
                         log("빈좌석 찾기 성공")
@@ -514,6 +533,14 @@ if __name__=="__main__":
 
                         # 페이지 로딩 대기
                         time.sleep(0.5)
+
+                        # 좌석을 불러오기 경고창 감지
+                        try:
+                            alert = driver.switch_to_alert()
+                            alert.accept()
+                            time.sleep(3)
+                        except:
+                            elem = ''
                         continue
 
     # 가격/할인선택 (3단계)
