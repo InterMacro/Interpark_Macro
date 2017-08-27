@@ -16,6 +16,7 @@ def cleanImage(imagePath):
     image = image.point(lambda x: 0 if x < 180 else 220)
     borderImage = ImageOps.expand(image, border=0, fill='white')
     borderImage.save(imagePath)
+    borderImage.close()
 
 # 활동로그를 기록하는 함수
 def log(logText):
@@ -38,17 +39,17 @@ if __name__=="__main__":
     try:
     # 사용자 입력 받기
         # 사용자 정보
-        #print("_____사용자 정보를 입력해주세요_____")
+        print("_____사용자 정보를 입력해주세요_____")
 
         # ID, PW
-        #userID = input("ID : ").strip()
-        #userPW = input("PW : ").strip()
-        userID = "wm5256"
-        userPW = "qkrwm207@"
+        userID = input("ID : ").strip()
+        userPW = input("PW : ").strip()
+        #userID = "wm5256"
+        #userPW = "qkrwm207@"
 
         # 주민등록번호
-        #userNum = input("주민등록번호 앞자리 : ").replace(" ", "")
-        userNum = "990122"
+        userNum = input("주민등록번호 앞자리 : ").replace(" ", "")
+        #userNum = "990122"
 
         # 주민드록번호 유효성검사
         if len(userNum) != 6 : exit()
@@ -79,16 +80,16 @@ if __name__=="__main__":
             userDate = "%04d%02d%02d" % (now.tm_year, now.tm_mon, now.tm_mday)
 
         # 회차
-        #userTime = input("회차 (n회차) : ").strip()
-        userTime = "1회차"
+        userTime = input("회차 (n회차) : ").strip()
+        #userTime = "1회차"
 
         # 할인 정보
-        #userTicket = input("할인 : ").strip()
-        userTicket = "재관람"
+        userTicket = input("할인 : ").strip()
+        #userTicket = "재관람"
 
         # 은행 정보
-        #userBank = input("은행 : ").strip()
-        userBank = "하나은행"
+        userBank = input("은행 : ").strip()
+        #userBank = "하나은행"
         if userBank.find("농협") != -1 : userBank = 38052
         elif userBank.find("중앙") != -1 : userBank = 38052
         elif userBank.find("국민") != -1 : userBank = 38051
@@ -273,7 +274,6 @@ if __name__=="__main__":
                 # Captcha 사진 가져오기
                 bs4 = BeautifulSoup(driver.page_source, "html.parser")
                 Captcha = bs4.find('div', class_='capchaInner').find('img', id='imgCaptcha')['src']
-                #print(Captcha['src'])
 
                 # Captcha.jpg 만들기
                 urlretrieve(Captcha, "captcha.jpg")
@@ -335,7 +335,6 @@ if __name__=="__main__":
             seatch = False
             while seatch != True :
                 for i in range(0, len(bs4.findAll('area')) + 1) :
-                    print(i)
                     # 좌석 프레임 받아오기
                     driver.switch_to.default_content()
                     frame = driver.find_element_by_id('ifrmSeat')
@@ -567,21 +566,19 @@ if __name__=="__main__":
         elem = driver.find_element_by_xpath("//td[@class='taL']//select[@index='"+elem+"']//option[@value='1']")
         elem.click()
 
-        '''
-        # 특수표 경고창 감지
-        try:
-            alert = driver.switch_to_alert()
-            alert.accept()
-        except:
-            elem = ''
-        # '''
-
         # 다음단계
         # 메인 프레임 받아오기
         driver.switch_to.default_content()
 
         # 4단계 넘어가기
         driver.execute_script("javascript:fnNextStep('P');")
+
+        # 특수표 경고창 감지
+        try:
+            alert = driver.switch_to_alert()
+            alert.accept()
+        except:
+            elem = ''
 
         # 활동로그
         log("가격/할인선택")
