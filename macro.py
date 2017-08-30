@@ -8,7 +8,13 @@ from PIL import ImageOps
 import smtplib
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
+import sys
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from PyQt4 import QtGui, QtCore
 import time
+
+# 개발자 : 박건희, 오수빈
 
 # 이미지를 선명하게 바꿔주는 함수
 def cleanImage(imagePath):
@@ -30,83 +36,158 @@ def log(logText):
     log.write("[" + nowTime + "] " + str(logText) + "\n")
     log.close()
 
+# 날짜 바꿀 때마다 선택된 날짜 정보 바꾸는 함수
+def showDate(date):
+    now = date.toString()[2:]
+    cal_lb.setText(
+        "<span style='color:#A90000'>선택된 날짜 : " + now[now.rindex(' ') + 1:] + "년 " + now[:now.index(' ')] + "월 "
+        + now[now.index(' ') + 1:now.rindex(' ')] + "일</span>")
+
+# 사용자 입력창 닫아주는 함수
+def close_1():
+    # 사용자 압력값 유효성검사
+    if (str(e1.text()) == "") | (str(e2.text()) == "") | (str(e3.text()) == "") | (str(e4.text()) == "") | (str(e6.text()) == "") | (str(e7.text()) == ""):
+        msg()
+        ch.setText("False")
+    else:
+        win.close()
+        ch.setText("True")
+
+# captcha 입력창 닫아주는 함수
+def close_2():
+    win.close()
+
+def msg():
+    QMessageBox.information(win, "error!", "빈칸없이 입력해주십시오.")
+    
 # main
-if __name__=="__main__":
+if __name__ == '__main__':
 # 프로그램 시작
     # 활동로그
     log("프로그램 시작")
 
-    try:
-    # 사용자 입력 받기
-        # 사용자 정보
-        print("_____사용자 정보를 입력해주세요_____")
+# 전역변수 선언 - 함수 호출을 위해서
+    global e1, e2, e3, e4, e6, e7, ch, win
 
-        # ID, PW
-        userID = input("ID : ").strip()
-        userPW = input("PW : ").strip()
-        #userID = "wm5256"
-        #userPW = "qkrwm207@"
+# 입력창 띄우기
+    app = QtGui.QApplication(sys.argv)
+    win = QWidget()
 
-        # 주민등록번호
-        userNum = input("주민등록번호 앞자리 : ").replace(" ", "")
-        #userNum = "990122"
+    # 위젯 설정
+    # ID
+    e1 = QLineEdit(win)
 
-        # 주민드록번호 유효성검사
-        if len(userNum) != 6 : exit()
+    # pw
+    e2 = QLineEdit(win)
+    e2.setEchoMode(QLineEdit.Password)
 
-        # 상품 정보
-        print("______상품 정보를 입력해주세요______")
+    # 주민등록번호
+    e3 = QLineEdit(win)
+    e3.setMaxLength(6)
+    e3.setValidator(QIntValidator())
 
-        # 상품명
-        userSearch = input("상품명 : ").strip()
+    # 상품명
+    e4 = QLineEdit(win)
 
-        # 날짜 정보
-        userDate = input("날짜(YYYYMMDD) : ").replace(" ", "")
-        #userDate = "1111111111"
+    # 날짜 정보
+    cal = QtGui.QCalendarWidget()
+    cal.showToday()
+    now = time.localtime()
+    cal.setMinimumDate(QDate(now.tm_year, now.tm_mon, now.tm_mday))
+    cal.setGridVisible(True)
+    cal.clicked[QtCore.QDate].connect(showDate)
 
-        # 날짜 정보 유효성검사
-        now = time.localtime()
-        if len(userDate) != 8 :
-            # 8자리로 입력하지 않았을 경우
-            userDate = "%04d%02d%02d" % (now.tm_year, now.tm_mon, now.tm_mday)
-        if (int(userDate[4:6]) <= 12) & (1 <= int(userDate[4:6])) != True :
-            # 1월 ~ 12월이 아닐 경우
-            userDate = "%04d%02d%02d" % (now.tm_year, now.tm_mon, now.tm_mday)
-        if int(userDate[:4]) < now.tm_year :
-            # 연도가 현재 날짜 정보보다 이전일 경우
-            userDate = "%04d%02d%02d" % (now.tm_year, now.tm_mon, now.tm_mday)
-        elif (int(userDate[:4]) == now.tm_year) & (int(userDate[4:6]) == now.tm_mon) & (int(userDate[6:]) < now.tm_mday) :
-            # 연도와 월이 현재 날짜 정보와 일치하는데 날짜가 현재보다 이전일 경우
-            userDate = "%04d%02d%02d" % (now.tm_year, now.tm_mon, now.tm_mday)
+    # 선택된 날짜 출력
+    cal_lb = QLabel()
+    cal_lb.setText("<span style='color:#A90000'>선택된 날짜 : " + str(now.tm_year) + "년 " + str(now.tm_mon) + "월 " + str(now.tm_mday) + "일</span>")
+    cal_lb.setAlignment(Qt.AlignCenter)
+    #cal_lb.setStyleSheet("background:rgb(0,120,120)")
 
-        # 회차
-        userTime = input("회차 (n회차) : ").strip()
-        #userTime = "1회차"
+    # 회차
+    e6 = QLineEdit(win)
+    e6.setInputMask('9회차')
 
-        # 할인 정보
-        userTicket = input("할인 : ").strip()
-        #userTicket = "재관람"
+    # 할인 정보
+    e7 = QLineEdit(win)
 
-        # 은행 정보
-        userBank = input("은행 : ").strip()
-        #userBank = "하나은행"
-        if userBank.find("농협") != -1 : userBank = 38052
-        elif userBank.find("중앙") != -1 : userBank = 38052
-        elif userBank.find("국민") != -1 : userBank = 38051
-        elif userBank.find("우리") != -1 : userBank = 38054
-        elif userBank.find("기업") != -1 : userBank = 38057
-        elif userBank.find("씨티") != -1 : userBank = 38055
-        elif userBank.find("신한") != -1 : userBank = 38056
-        elif userBank.find("우체국") != -1 : userBank = 38058
-        elif userBank.find("하나") != -1 : userBank = 38053
-        else : userBank = 38051
+    # 드롭박스 (무통장 은행)
+    e8 = QComboBox(win)
+    e8.addItems(["농협", "중앙", "국민", "우리", "기업", "씨티", "신한", "우체국", "하나"])
 
+    # 시작버튼
+    b1 = QPushButton("InterMacro Start", win)
+    b1.toggle()
+    #b1.setEnabled(False)
+    b1.clicked.connect(close_1)
+
+    # 시작버튼 상태 변환용 라벨
+    ch = QLabel()
+    ch.setText("False")
+
+# Layout에 추가하기
+    flo = QFormLayout()
+    flo.addRow("ID", e1)
+    flo.addRow("Password", e2)
+    flo.addRow("주민번호 앞자리", e3)
+    flo.addRow("상품명", e4)
+    flo.addRow(cal_lb)
+    flo.addRow(cal)
+    flo.addRow("회차", e6)
+    flo.addRow("할인", e7)
+    flo.addRow("은행", e8)
+    flo.addRow(b1)
+
+# 입력창 옵션 설정
+    win.setLayout(flo)
+    win.setGeometry(830, 350, 300, 300)
+    win.setWindowTitle("InterMacro")
+    win.setFont(QFont("consolas"))
+    win.show()
+
+    # loop 경계선
+    app.exec_()
+
+# 정상적인 접근인지 확인
+    if ch.text() == "False" : exit()
+    else :
         # 활동로그
-        log("사용자 입력 받기")
+        log("사용자 입력받기 성공")
+        
+# 입력한 정보 받아오기
+    # ID, PW, 주민번호 앞자리
+    userID = e1.text().strip()
+    userPW = e2.text().strip()
+    userNum = e3.text()
 
+    # 상품명, 예매일, 회차, 할인, 은행
+    userSearch = e4.text().strip()
+    QDate = cal_lb.text()
+    userTime = e6.text()
+    userTicket = e7.text().strip()
+    userBank = e8.currentText().strip()
+
+    # 예매일 입력값 사용가능한 형태로 재배치
+    userDate = QDate[QDate.index(": ") + 2:QDate.index("년")]
+    userDate = userDate + QDate[QDate.index("년") + 2:QDate.index("월")].rjust(2, '0')
+    userDate = userDate + QDate[QDate.index("월") + 2:QDate.index("일")].rjust(2, '0')
+
+    # 은행 입력값 사용가능한 형태로 재배치
+    if userBank.find("농협") != -1: userBank = 38052
+    elif userBank.find("중앙") != -1: userBank = 38052
+    elif userBank.find("국민") != -1: userBank = 38051
+    elif userBank.find("우리") != -1: userBank = 38054
+    elif userBank.find("기업") != -1: userBank = 38057
+    elif userBank.find("씨티") != -1: userBank = 38055
+    elif userBank.find("신한") != -1: userBank = 38056
+    elif userBank.find("우체국") != -1: userBank = 38058
+    elif userBank.find("하나") != -1: userBank = 38053
+    else: userBank = 38051
+
+# 매크로 시작
+    try:
     # 인터파크 화면 띄우기
         # 드라이브 객체 생성
-        url = 'C:/Users/USER/Downloads/chromedriver'  # 드라이브가 있는 경로
+        url = 'C:/chromedriver_win32/chromedriver'  # 드라이브가 있는 경로
         driver = webdriver.Chrome(url)
 
         # 인터파크 화면 띄우기
@@ -154,7 +235,7 @@ if __name__=="__main__":
         # 활동로그
         log("예매창 띄우기")
 
-    # 예매창 객체 받아오기
+        # 예매창 객체 받아오기
         driver.switch_to.window(driver.window_handles[1])
 
         # 맴버십이십니까? 일반회원입니다.
@@ -182,26 +263,26 @@ if __name__=="__main__":
         #print(driver.page_source)
         YY = driver.find_element_by_xpath("//div[@class='month']//span[2]//em[1]").text
         MM = driver.find_element_by_xpath("//div[@class='month']//span[2]//em[2]").text
-        if len(MM) < 2 : MM = "0"+MM
-        YYMM = YY+MM
+        if len(MM) < 2: MM = "0" + MM
+        YYMM = YY + MM
 
         # 사용자 입력값에서 연도와 월만 따로 추출한다.
         userYYMM = userDate[:6]
 
         # 결과에 따라 달을 바꿔 준다
-        while YYMM < userYYMM :
+        while YYMM < userYYMM:
             # 12월인지 아닌지 확인한다.
             if MM == "12":
                 MM = "01"
                 YY = int(YY) + 1
                 YYMM = str(YY) + str(MM)
             else:
-                MM = int(MM)+1
+                MM = int(MM) + 1
                 if len(str(MM)) < 2: MM = "0" + str(MM)
                 YYMM = str(YY) + str(MM)
 
             # 달을 바꾼다.
-            driver.execute_script("javascript: fnChangeMonth('"+YYMM+"');")
+            driver.execute_script("javascript: fnChangeMonth('" + YYMM + "');")
 
         # 날짜 선택하기
         # 달력 정보 가져오기
@@ -212,17 +293,17 @@ if __name__=="__main__":
 
         # 사용자의 입력값과 일치하는 함수를 찾는다.
         for i in range(0, len(calender)):
-            if "fnSelectPlayDate("+str(i)+", '"+userDate+"')" == calender[i]["onclick"]:
-                elem = "fnSelectPlayDate("+str(i)+", '"+userDate+"')"
+            if "fnSelectPlayDate(" + str(i) + ", '" + userDate + "')" == calender[i]["onclick"]:
+                elem = "fnSelectPlayDate(" + str(i) + ", '" + userDate + "')"
                 break
 
         # 날짜 선택하기
-        driver.execute_script("javascript:"+elem)
+        driver.execute_script("javascript:" + elem)
 
         # 페이지 로딩 대기
         time.sleep(0.5)
 
-        # 회차 선택하기
+        # 회차
         # 회차 정보 가져오기
         #print(driver.page_source)
         bs4 = BeautifulSoup(driver.page_source, "html.parser")
@@ -230,9 +311,9 @@ if __name__=="__main__":
 
         # 회차 유효성 검사
         try:
-            if int(userTime[0]) <= len(timeList) :
-                elem = timeList[int(userTime[0])-1]["onclick"]
-            else :
+            if int(userTime[0]) <= len(timeList):
+                elem = timeList[int(userTime[0]) - 1]["onclick"]
+            else:
                 elem = timeList[0]["onclick"]
         except:
             elem = timeList[0]["onclick"]
@@ -270,7 +351,7 @@ if __name__=="__main__":
         # Captcha 뚫기
         try:
             # Captcha가 있을 경우
-            while(True):
+            while (True):
                 # Captcha 사진 가져오기
                 bs4 = BeautifulSoup(driver.page_source, "html.parser")
                 Captcha = bs4.find('div', class_='capchaInner').find('img', id='imgCaptcha')['src']
@@ -279,15 +360,47 @@ if __name__=="__main__":
                 urlretrieve(Captcha, "captcha.jpg")
                 cleanImage("captcha.jpg")
 
-                # Captcha 해석하기
-                print("_________Captcha 해석하기_________")
-                text = input("Captcha : ")
-                #image = Image.open('captcha.jpg')
-                #text = image_to_string(image)
+                # Captcha 입력창 띄우기
+                app_2 = QtGui.QApplication(sys.argv)
+                win = QWidget()
+
+                # 위젯 설정
+                # Captcha 이미지 띄우기
+                img = QLabel()
+                img.setAlignment(Qt.AlignCenter)
+                img.setPixmap(QPixmap("captcha.jpg"))
+
+                # Captcha 입력할 text 필드
+                captcha = QLineEdit(win)
+                captcha.setFont(QFont("consolas", 20))
+                captcha.setAlignment(Qt.AlignCenter)
+                captcha.editingFinished.connect(close_2)
+
+                # 입력완료 버튼
+                b2 = QPushButton("입력완료", win)
+                b2.toggle()
+                # b1.setEnabled(False)
+                b2.clicked.connect(close_2)
+
+                # Layout에 추가하기
+                flo = QFormLayout()
+                flo.addRow(img)
+                flo.addRow(captcha)
+                flo.addRow(b2)
+
+                # 입력창 옵션 설정
+                win.setLayout(flo)
+                win.setGeometry(830, 350, 200, 100)
+                win.setWindowTitle("captcha")
+                win.setFont(QFont("consolas"))
+                win.show()
+
+                # loop 경계선
+                app_2.exec_()
 
                 # Captcha 값 입력하기
                 driver.find_element_by_xpath("//div[@class='capchaInner']//span").click()
-                driver.find_element_by_xpath("//input[@id='txtCaptcha']").send_keys(text)
+                driver.find_element_by_xpath("//input[@id='txtCaptcha']").send_keys(captcha.text())
 
                 # Captcha 입력완료
                 driver.execute_script("javascript:fnCheck();")
@@ -295,16 +408,18 @@ if __name__=="__main__":
                 # 성공 여부 검사
                 bs4 = BeautifulSoup(driver.page_source, "html.parser")
                 Captcha_ch = bs4.find('div', class_='validationTxt alert')
-
                 if Captcha_ch == None:
                     # 성공했을 경우
+
+                    # 활동로그
+                    log("Captcha 입력 성공")
+
                     break
                 else:
                     # 실패했을 경우
                     # Captcha 새로고침
                     driver.execute_script("javascript:fnCapchaRefresh();")
                     continue
-
         except:
             # Captcha가 없을 경우
             elem = ''
@@ -369,7 +484,6 @@ if __name__=="__main__":
                         # 반복문 종료
                         seatch = True
                         break
-
                     except:
                         # 좌석이 없을 경우
                         # 미니맵 프레임 받아오기
@@ -462,7 +576,6 @@ if __name__=="__main__":
                             # 반복문 종료
                             seatch = True
                             break
-
                         except:
                             # 좌석이 없을 경우
                             # 2단계 프레임 받아오기
@@ -520,7 +633,6 @@ if __name__=="__main__":
                         # 페이지 로딩 대기
                         time.sleep(0.5)
                         break
-
                     except:
                         # 2단계 프레임 받아오기
                         driver.switch_to.default_content()
@@ -555,7 +667,7 @@ if __name__=="__main__":
         ticketList = bs4.findAll('select')
 
         # 사용자의 입력값과 일치하는 함수를 찾는다.
-        elem = "001" # 만약 일치하는 값이 없을 경우 일반표를 잡는다.
+        elem = "001"  # 만약 일치하는 값이 없을 경우 일반표를 잡는다.
         for i in range(0, len(ticketList)):
             ticketStr = ticketList[i]["pricegradename"]
             if ticketStr.find(userTicket) != -1:
@@ -563,7 +675,7 @@ if __name__=="__main__":
                 break
 
         # 표 선택하기
-        elem = driver.find_element_by_xpath("//td[@class='taL']//select[@index='"+elem+"']//option[@value='1']")
+        elem = driver.find_element_by_xpath("//td[@class='taL']//select[@index='" + elem + "']//option[@value='1']")
         elem.click()
 
         # 다음단계
@@ -676,151 +788,114 @@ if __name__=="__main__":
         result = open("result.txt", "w", encoding="utf-8")
 
         # 상품정보
-        print("___________ 상품정보 ___________")
         result.write("___________ 상품정보 ___________\n")
 
         # 예약 번호
         text_1 = driver.find_element_by_xpath("//p[@class='tit']//span[1]").text
         text_2 = driver.find_element_by_xpath("//p[@class='tit']//span[2]").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 상품
         text_1 = driver.find_element_by_xpath("//div[@class='contT']//table//tbody//tr[1]//th").text
         text_2 = driver.find_element_by_xpath("//div[@class='contT']//table//tbody//tr[1]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 장소
         text_1 = driver.find_element_by_xpath("//div[@class='contT']//table//tbody//tr[2]//th").text
         text_2 = driver.find_element_by_xpath("//div[@class='contT']//table//tbody//tr[2]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 일시
         text_1 = driver.find_element_by_xpath("//div[@class='contT']//table//tbody//tr[3]//th").text
         text_2 = driver.find_element_by_xpath("//div[@class='contT']//table//tbody//tr[3]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 좌석
         text_1 = driver.find_element_by_xpath("//div[@class='contT']//table//tbody//tr[4]//th").text
         text_2 = driver.find_element_by_xpath("//div[@class='contT']//table//tbody//tr[4]//td//div[@class='box_scroll']").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 예매자 정보
-        print("__________ 예매자 정보 __________")
         result.write("__________ 예매자 정보 __________\n")
 
         # 예매자
         text_1 = driver.find_element_by_xpath("//div[@class='contB']//table//tbody//tr[1]//th").text
         text_2 = driver.find_element_by_xpath("//div[@class='contB']//table//tbody//tr[1]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 예매자 연락처
         text_1 = driver.find_element_by_xpath("//div[@class='contB']//table//tbody//tr[2]//th").text
         text_2 = driver.find_element_by_xpath("//div[@class='contB']//table//tbody//tr[2]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 티켓수령방법
         text_1 = driver.find_element_by_xpath("//div[@class='contB']//table//tbody//tr[3]//th").text
         text_2 = driver.find_element_by_xpath("//div[@class='contB']//table//tbody//tr[3]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 결제정보
-        print("___________ 결제정보 ___________")
         result.write("___________ 결제정보 ___________\n")
 
         # 총 결제금액
         text_1 = driver.find_element_by_xpath("//table[@class='new_t']//thead//tr[1]//th").text
         text_2 = driver.find_element_by_xpath("//table[@class='new_t']//thead//tr[1]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 티켓금액
         text_1 = driver.find_element_by_xpath("//table[@class='new_t']//tbody//tr[1]//th").text
         text_2 = driver.find_element_by_xpath("//table[@class='new_t']//tbody//tr[1]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 수수료
         text_1 = driver.find_element_by_xpath("//table[@class='new_t']//tbody//tr[2]//th").text
         text_2 = driver.find_element_by_xpath("//table[@class='new_t']//tbody//tr[2]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 배송료
         text_1 = driver.find_element_by_xpath("//table[@class='new_t']//tbody//tr[3]//th").text
         text_2 = driver.find_element_by_xpath("//table[@class='new_t']//tbody//tr[3]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 취소기한
         text_1 = driver.find_element_by_xpath("//div[@class='completeL']//ul//li[1]").text
-        print(text_1)
         result.write(text_1 + "\n")
 
         # 결제상세정보
-        print("_________ 결제상세정보 _________")
         result.write("_________ 결제상세정보 _________\n")
 
         # 결제방법
         text_1 = driver.find_element_by_xpath("//div[@class='completeR']//table//tbody//tr[1]//th").text
         text_2 = driver.find_element_by_xpath("//div[@class='completeR']//table//tbody//tr[1]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 입금마감일시
         text_1 = driver.find_element_by_xpath("//div[@class='completeR']//table//tbody//tr[2]//th").text
         text_2 = driver.find_element_by_xpath("//div[@class='completeR']//table//tbody//tr[2]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 입금계좌
         text_1 = driver.find_element_by_xpath("//div[@class='completeR']//table//tbody//tr[3]//th").text
         text_2 = driver.find_element_by_xpath("//div[@class='completeR']//table//tbody//tr[3]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
         # 예금주명
         text_1 = driver.find_element_by_xpath("//div[@class='completeR']//table//tbody//tr[4]//th").text
         text_2 = driver.find_element_by_xpath("//div[@class='completeR']//table//tbody//tr[4]//td").text
-        print(text_1, end=' : ')
-        print(text_2)
         result.write(text_1 + " : ")
         result.write(text_2 + "\n")
 
@@ -854,7 +929,7 @@ if __name__=="__main__":
         # 전달할 내용 입력
         result = open('result.txt', 'r', encoding="utf-8").readlines()
         resultText = ''
-        for i in range(0, len(result)) :
+        for i in range(0, len(result)):
             resultText = resultText + result[i]
         resultPart = MIMEText(resultText, _charset='utf-8')
         msg.attach(resultPart)
@@ -890,11 +965,12 @@ if __name__=="__main__":
         log("예매결과 확인")
 
     except:
-        # 에러 발생할 경우
-        print("error")
+    # 에러 발생할 경우
+        QMessageBox.information(win, "error!", "error      ")
 
         # 활동로그
         log("에러 발생")
+
 
 # 프로그램 종료
     # 활동로그
