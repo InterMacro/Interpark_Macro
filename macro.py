@@ -1,4 +1,4 @@
-#-*- encoding:utf8 -*-
+# -*- encoding:utf8 -*-y
 
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -37,17 +37,29 @@ def log(logText):
     log.close()
 
 # 날짜 바꿀 때마다 선택된 날짜 정보 바꾸는 함수
-def showDate(date):
-    now = date.toString()[2:]
-    cal_lb.setText(
-        "<span style='color:#A90000'>선택된 날짜 : " + now[now.rindex(' ') + 1:] + "년 " + now[:now.index(' ')] + "월 "
-        + now[now.index(' ') + 1:now.rindex(' ')] + "일</span>")
+def showDate():
+    now = cal.selectedDate().toString()[2:]
+    cal_lb.setText("<span style='color:#A90000'>선택된 날짜 : " + now[now.rindex(' ') + 1:] + "년 " + now[:now.index(' ')] + "월 "
+            + now[now.index(' ') + 1:now.rindex(' ')] + "일</span>")
+
+# 포커스 이동 함수
+def nextFocus_1() : e2.setFocus()
+def nextFocus_2() : e3.setFocus()
+def nextFocus_3() : e4.setFocus()
+def nextFocus_4() : cal.setFocus()
+def nextFocus_5() : e6.setFocus()
+def nextFocus_6() : e7.setFocus()
+def nextFocus_7() : e8.setFocus()
+
+# 사용자 정의 키보드 이벤트 : QWidget
+def esc(event):
+    if event.key() == QtCore.Qt.Key_Escape : exit()
+    event.accept()
 
 # 사용자 입력창 닫아주는 함수
 def close_1():
     # 사용자 압력값 유효성검사
-    if (str(e1.text()) == "") | (str(e2.text()) == "") | (str(e3.text()) == "") | (str(e4.text()) == "") | (str(e6.text()) == "회차") | (str(e7.text()) == ""):
-        ch.setText("False")
+    if (str(e1.text()) == "") | (str(e2.text()) == "") | (str(e3.text()) == "") | (len(str(e3.text())) < 6) | (str(e4.text()) == "") | (str(e6.text()) == "회차") | (str(e7.text()) == ""):
         win.setFocus()
         if str(e1.text()) == "" :
             e1.setFocus()
@@ -58,6 +70,9 @@ def close_1():
         elif str(e3.text()) == "" :
             e3.setFocus()
             msg("주민번호 앞자리를 입력하십시오.")
+        elif len(str(e3.text())) < 6 :
+            e3.setFocus()
+            msg("주민번호 앞자리를 전부 입력하십시오.")
         elif str(e4.text()) == "" :
             e4.setFocus()
             msg("상품명을 입력하십시오.")
@@ -78,7 +93,7 @@ def close_2():
 # 경고창을 띄우는 함수
 def msg(str):
     QMessageBox.information(win, "error!", str)
-    
+
 # main
 if __name__ == '__main__':
 # 프로그램 시작
@@ -86,35 +101,43 @@ if __name__ == '__main__':
     log("프로그램 시작")
 
 # 전역변수 선언 - 함수 호출을 위해서
-    global e1, e2, e3, e4, e6, e7, ch, win
+    global e1, e2, e3, e4, cal, e6, e7, b1, ch, win
 
 # 입력창 띄우기
     app = QtGui.QApplication(sys.argv)
     win = QWidget()
+    win.keyPressEvent = esc
+    win.setFocus()
 
-    # 위젯 설정
+# 위젯 설정
     # ID
     e1 = QLineEdit(win)
+    e1.setPlaceholderText("ID를 입력해주세요")
+    e1.setFocus()
 
     # pw
     e2 = QLineEdit(win)
+    e2.setPlaceholderText("Password를 입력해주세요")
     e2.setEchoMode(QLineEdit.Password)
 
     # 주민등록번호
     e3 = QLineEdit(win)
     e3.setMaxLength(6)
+    e3.setPlaceholderText("주민번호를 입력해주세요")
     e3.setValidator(QIntValidator())
 
     # 상품명
     e4 = QLineEdit(win)
+    e4.setPlaceholderText("상품명을 입력해주세요")
 
     # 날짜 정보
-    cal = QtGui.QCalendarWidget()
+    cal = QCalendarWidget(win)
     cal.showToday()
     now = time.localtime()
     cal.setMinimumDate(QDate(now.tm_year, now.tm_mon, now.tm_mday))
     cal.setGridVisible(True)
-    cal.clicked[QtCore.QDate].connect(showDate)
+    cal.setVerticalHeaderFormat(False)
+    cal.selectionChanged.connect(showDate)
 
     # 선택된 날짜 출력
     cal_lb = QLabel()
@@ -128,6 +151,7 @@ if __name__ == '__main__':
 
     # 할인 정보
     e7 = QLineEdit(win)
+    e7.setPlaceholderText("할인 유형을 입력해주세요")
 
     # 드롭박스 (무통장 은행)
     e8 = QComboBox(win)
@@ -136,29 +160,40 @@ if __name__ == '__main__':
     # 시작버튼
     b1 = QPushButton("InterMacro Start", win)
     b1.toggle()
-    #b1.setEnabled(False)
+    b1.setAutoDefault(True)
     b1.clicked.connect(close_1)
 
     # 시작버튼 상태 변환용 라벨
     ch = QLabel()
     ch.setText("False")
 
+# enter 키로 포커스 이동하기
+    e1.returnPressed.connect(nextFocus_1)
+    e2.returnPressed.connect(nextFocus_2)
+    e3.returnPressed.connect(nextFocus_3)
+    e4.returnPressed.connect(nextFocus_4)
+    cal.activated.connect(nextFocus_5)
+    e6.returnPressed.connect(nextFocus_6)
+    e7.returnPressed.connect(nextFocus_7)
+
 # Layout에 추가하기
     flo = QFormLayout()
     flo.addRow("ID", e1)
     flo.addRow("Password", e2)
-    flo.addRow("주민번호 앞자리", e3)
+    flo.addRow("주민번호 앞자리 ", e3)
     flo.addRow("상품명", e4)
     flo.addRow(cal_lb)
     flo.addRow(cal)
     flo.addRow("회차", e6)
-    flo.addRow("할인", e7)
+    flo.addRow("할인 유형", e7)
     flo.addRow("은행", e8)
     flo.addRow(b1)
 
 # 입력창 옵션 설정
     win.setLayout(flo)
-    win.setGeometry(830, 350, 300, 300)
+    win.setWindowIcon(QIcon("interpark_icon.png"))
+    win.setGeometry(820, 350, 310, 300)
+    win.setContentsMargins(3, 1, 3, 2)
     win.setWindowTitle("InterMacro")
     win.setFont(QFont("consolas"))
     win.show()
@@ -171,7 +206,7 @@ if __name__ == '__main__':
     else :
         # 활동로그
         log("사용자 입력받기 성공")
-        
+
 # 입력한 정보 받아오기
     # ID, PW, 주민번호 앞자리
     userID = e1.text().strip()
@@ -382,6 +417,7 @@ if __name__ == '__main__':
                 # Captcha 입력창 띄우기
                 app_2 = QtGui.QApplication(sys.argv)
                 win = QWidget()
+                win.keyPressEvent = esc
 
                 # 위젯 설정
                 # Captcha 이미지 띄우기
@@ -391,6 +427,7 @@ if __name__ == '__main__':
 
                 # Captcha 입력할 text 필드
                 captcha = QLineEdit(win)
+                captcha.setFocus()
                 captcha.setFont(QFont("consolas", 20))
                 captcha.setAlignment(Qt.AlignCenter)
                 captcha.editingFinished.connect(close_2)
@@ -398,7 +435,7 @@ if __name__ == '__main__':
                 # 입력완료 버튼
                 b2 = QPushButton("입력완료", win)
                 b2.toggle()
-                # b1.setEnabled(False)
+                b2.setAutoDefault(True)
                 b2.clicked.connect(close_2)
 
                 # Layout에 추가하기
@@ -409,7 +446,9 @@ if __name__ == '__main__':
 
                 # 입력창 옵션 설정
                 win.setLayout(flo)
+                win.setWindowIcon(QIcon("interpark_icon.png"))
                 win.setGeometry(830, 350, 200, 100)
+                win.setContentsMargins(2, 1, 2, 2)
                 win.setWindowTitle("captcha")
                 win.setFont(QFont("consolas"))
                 win.show()
