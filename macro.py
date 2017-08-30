@@ -46,9 +46,27 @@ def showDate(date):
 # 사용자 입력창 닫아주는 함수
 def close_1():
     # 사용자 압력값 유효성검사
-    if (str(e1.text()) == "") | (str(e2.text()) == "") | (str(e3.text()) == "") | (str(e4.text()) == "") | (str(e6.text()) == "") | (str(e7.text()) == ""):
-        msg()
+    if (str(e1.text()) == "") | (str(e2.text()) == "") | (str(e3.text()) == "") | (str(e4.text()) == "") | (str(e6.text()) == "회차") | (str(e7.text()) == ""):
         ch.setText("False")
+        win.setFocus()
+        if str(e1.text()) == "" :
+            e1.setFocus()
+            msg("ID를 입력하십시오.")
+        elif str(e2.text()) == "" :
+            e2.setFocus()
+            msg("Password를 입력하십시오.")
+        elif str(e3.text()) == "" :
+            e3.setFocus()
+            msg("주민번호 앞자리를 입력하십시오.")
+        elif str(e4.text()) == "" :
+            e4.setFocus()
+            msg("상품명을 입력하십시오.")
+        elif str(e6.text()) == "회차" :
+            e6.setFocus()
+            msg("회차를 입력하십시오.")
+        elif str(e7.text()) == "" :
+            e7.setFocus()
+            msg("할인을 입력하십시오.")
     else:
         win.close()
         ch.setText("True")
@@ -57,8 +75,9 @@ def close_1():
 def close_2():
     win.close()
 
-def msg():
-    QMessageBox.information(win, "error!", "빈칸없이 입력해주십시오.")
+# 경고창을 띄우는 함수
+def msg(str):
+    QMessageBox.information(win, "error!", str)
     
 # main
 if __name__ == '__main__':
@@ -966,7 +985,7 @@ if __name__ == '__main__':
 
     except:
     # 에러 발생할 경우
-        QMessageBox.information(win, "error!", "error      ")
+        msg("error      ")
 
         # 활동로그
         log("에러 발생")
