@@ -62,26 +62,26 @@ def close_1():
     if (str(e1.text()) == "") | (str(e2.text()) == "") | (str(e3.text()) == "") | (len(str(e3.text())) < 6) | (str(e4.text()) == "") | (str(e6.text()) == "회차") | (str(e7.text()) == ""):
         win.setFocus()
         if str(e1.text()) == "" :
-            e1.setFocus()
             msg("ID를 입력하십시오.")
+            e1.setFocus()
         elif str(e2.text()) == "" :
-            e2.setFocus()
             msg("Password를 입력하십시오.")
+            e2.setFocus()
         elif str(e3.text()) == "" :
-            e3.setFocus()
             msg("주민번호 앞자리를 입력하십시오.")
-        elif len(str(e3.text())) < 6 :
             e3.setFocus()
+        elif len(str(e3.text())) < 6 :
             msg("주민번호 앞자리를 전부 입력하십시오.")
+            e3.setFocus()
         elif str(e4.text()) == "" :
-            e4.setFocus()
             msg("상품명을 입력하십시오.")
+            e4.setFocus()
         elif str(e6.text()) == "회차" :
-            e6.setFocus()
             msg("회차를 입력하십시오.")
+            e6.setFocus()
         elif str(e7.text()) == "" :
-            e7.setFocus()
             msg("할인을 입력하십시오.")
+            e7.setFocus()
     else:
         win.close()
         ch.setText("True")
@@ -457,7 +457,8 @@ if __name__ == '__main__':
                 app_2.exec_()
 
                 # Captcha 값 입력하기
-                driver.find_element_by_xpath("//div[@class='capchaInner']//span").click()
+                #print(driver.page_source)
+                driver.find_element_by_xpath("//div[@class='validationTxt']//span").click()
                 driver.find_element_by_xpath("//input[@id='txtCaptcha']").send_keys(captcha.text())
 
                 # Captcha 입력완료
