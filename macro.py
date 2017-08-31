@@ -53,7 +53,7 @@ def nextFocus_7() : e8.setFocus()
 
 # 사용자 정의 키보드 이벤트 : QWidget
 def esc(event):
-    if event.key() == QtCore.Qt.Key_Escape : exit()
+    if event.key() == QtCore.Qt.Key_Escape : sys.exit()
     event.accept()
 
 # 사용자 입력창 닫아주는 함수
@@ -191,7 +191,7 @@ if __name__ == '__main__':
 
 # 입력창 옵션 설정
     win.setLayout(flo)
-    win.setWindowIcon(QIcon("interpark_icon.png"))
+    win.setWindowIcon(QIcon("interpark_icon.ico"))
     win.setGeometry(820, 350, 310, 300)
     win.setContentsMargins(3, 1, 3, 2)
     win.setWindowTitle("InterMacro")
@@ -202,7 +202,7 @@ if __name__ == '__main__':
     app.exec_()
 
 # 정상적인 접근인지 확인
-    if ch.text() == "False" : exit()
+    if ch.text() == "False" : sys.exit()
     else :
         # 활동로그
         log("사용자 입력받기 성공")
@@ -446,7 +446,7 @@ if __name__ == '__main__':
 
                 # 입력창 옵션 설정
                 win.setLayout(flo)
-                win.setWindowIcon(QIcon("interpark_icon.png"))
+                win.setWindowIcon(QIcon("interpark_icon.ico"))
                 win.setGeometry(830, 350, 200, 100)
                 win.setContentsMargins(2, 1, 2, 2)
                 win.setWindowTitle("captcha")
