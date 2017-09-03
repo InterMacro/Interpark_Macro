@@ -53,7 +53,10 @@ def nextFocus_7() : e8.setFocus()
 
 # 사용자 정의 키보드 이벤트 : QWidget
 def esc(event):
-    if event.key() == QtCore.Qt.Key_Escape : sys.exit()
+    if event.key() == QtCore.Qt.Key_Escape :
+        # 활동로그
+        log("프로그램 종료")
+        sys.exit()
     event.accept()
 
 # 사용자 입력창 닫아주는 함수
@@ -202,7 +205,10 @@ if __name__ == '__main__':
     app.exec_()
 
 # 정상적인 접근인지 확인
-    if ch.text() == "False" : sys.exit()
+    if ch.text() == "False" :
+        # 활동로그
+        log("프로그램 종료")
+        sys.exit()
     else :
         # 활동로그
         log("사용자 입력받기 성공")
@@ -1029,7 +1035,6 @@ if __name__ == '__main__':
 
         # 활동로그
         log("에러 발생")
-
 
 # 프로그램 종료
     # 활동로그
