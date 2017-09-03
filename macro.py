@@ -43,13 +43,25 @@ def showDate():
             + now[now.index(' ') + 1:now.rindex(' ')] + "일</span>")
 
 # 포커스 이동 함수
-def nextFocus_1() : e2.setFocus()
-def nextFocus_2() : e3.setFocus()
-def nextFocus_3() : e4.setFocus()
-def nextFocus_4() : cal.setFocus()
-def nextFocus_5() : e6.setFocus()
-def nextFocus_6() : e7.setFocus()
-def nextFocus_7() : e8.setFocus()
+def nextFocus_1() :
+    e2.setFocus()
+    e2.selectAll()
+def nextFocus_2() :
+    e3.setFocus()
+    e3.selectAll()
+def nextFocus_3() :
+    e4.setFocus()
+    e4.selectAll()
+def nextFocus_4() :
+    cal.setFocus()
+def nextFocus_5() :
+    e6.setFocus()
+    e6.selectAll()
+def nextFocus_6() :
+    e7.setFocus()
+    e7.selectAll()
+def nextFocus_7() :
+    e8.setFocus()
 
 # 사용자 정의 키보드 이벤트 : QWidget
 def esc(event):
@@ -105,12 +117,12 @@ if __name__ == '__main__':
 
 # 전역변수 선언 - 함수 호출을 위해서
     global e1, e2, e3, e4, cal, e6, e7, b1, ch, win
+    global set
 
 # 입력창 띄우기
     app = QtGui.QApplication(sys.argv)
     win = QWidget()
     win.keyPressEvent = esc
-    win.setFocus()
 
 # 위젯 설정
     # ID
