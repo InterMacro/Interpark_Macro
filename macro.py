@@ -1,4 +1,4 @@
-# -*- encoding:utf8 -*-y
+# -*- encoding:utf8 -*-
 
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -61,7 +61,7 @@ def nextFocus_6() :
     e7.setFocus()
     e7.selectAll()
 def nextFocus_7() :
-    e8.setFocus()
+    cb1.setFocus()
 
 # 사용자 정의 키보드 이벤트 : QWidget
 def esc(event):
@@ -74,8 +74,7 @@ def esc(event):
 # 사용자 입력창 닫아주는 함수
 def close_1():
     # 사용자 압력값 유효성검사
-    if (str(e1.text()) == "") | (str(e2.text()) == "") | (str(e3.text()) == "") | (len(str(e3.text())) < 6) | (str(e4.text()) == "") | (str(e6.text()) == "회차") | (str(e7.text()) == ""):
-        win.setFocus()
+    if (str(e1.text()) == "") | (str(e2.text()) == "") | (str(e3.text()) == "") | (len(str(e3.text())) < 6) | (str(e4.text()) == "") | (str(e6.text()) == "회차") | (str(e7.text()) == "") | ((cb1.isChecked() | cb2.isChecked() | cb3.isChecked() | cb4.isChecked() | cb5.isChecked()) == False):
         if str(e1.text()) == "" :
             msg("ID를 입력하십시오.")
             e1.setFocus()
@@ -83,10 +82,10 @@ def close_1():
             msg("Password를 입력하십시오.")
             e2.setFocus()
         elif str(e3.text()) == "" :
-            msg("주민번호 앞자리를 입력하십시오.")
+            msg("법정생년월일을 입력하십시오.")
             e3.setFocus()
         elif len(str(e3.text())) < 6 :
-            msg("주민번호 앞자리를 전부 입력하십시오.")
+            msg("법정생년월일을 전부 입력하십시오.")
             e3.setFocus()
         elif str(e4.text()) == "" :
             msg("상품명을 입력하십시오.")
@@ -97,6 +96,9 @@ def close_1():
         elif str(e7.text()) == "" :
             msg("할인을 입력하십시오.")
             e7.setFocus()
+        elif cb1.isChecked() == False :
+            msg("좌석등급을 선택하십시오.")
+            cb1.setFocus()
     else:
         win.close()
         ch.setText("True")
@@ -117,7 +119,7 @@ if __name__ == '__main__':
 
 # 전역변수 선언 - 함수 호출을 위해서
     global e1, e2, e3, e4, cal, e6, e7, b1, ch, win
-    global set
+    global cb1, cb2, cb3, cb4, cb5
 
 # 입력창 띄우기
     app = QtGui.QApplication(sys.argv)
@@ -138,7 +140,7 @@ if __name__ == '__main__':
     # 주민등록번호
     e3 = QLineEdit(win)
     e3.setMaxLength(6)
-    e3.setPlaceholderText("주민번호를 입력해주세요")
+    e3.setPlaceholderText("법정생년월일을 입력해주세요")
     e3.setValidator(QIntValidator())
 
     # 상품명
@@ -168,9 +170,23 @@ if __name__ == '__main__':
     e7 = QLineEdit(win)
     e7.setPlaceholderText("할인 유형을 입력해주세요")
 
+    # 좌석 등급
+    cb1 = QCheckBox("VIP", win)
+    cb2 = QCheckBox("R", win)
+    cb3 = QCheckBox("S", win)
+    cb4 = QCheckBox("A", win)
+    cb5 = QCheckBox("기타", win)
+
+    e8 = QHBoxLayout()
+    e8.addWidget(cb1)
+    e8.addWidget(cb2)
+    e8.addWidget(cb3)
+    e8.addWidget(cb4)
+    e8.addWidget(cb5)
+
     # 드롭박스 (무통장 은행)
-    e8 = QComboBox(win)
-    e8.addItems(["농협", "중앙", "국민", "우리", "기업", "씨티", "신한", "우체국", "하나"])
+    e9 = QComboBox(win)
+    e9.addItems(["농협", "중앙", "국민", "우리", "기업", "씨티", "신한", "우체국", "하나"])
 
     # 시작버튼
     b1 = QPushButton("InterMacro Start", win)
@@ -179,8 +195,7 @@ if __name__ == '__main__':
     b1.clicked.connect(close_1)
 
     # 시작버튼 상태 변환용 라벨
-    ch = QLabel()
-    ch.setText("False")
+    ch = QLabel("False")
 
 # enter 키로 포커스 이동하기
     e1.returnPressed.connect(nextFocus_1)
@@ -195,13 +210,14 @@ if __name__ == '__main__':
     flo = QFormLayout()
     flo.addRow("ID", e1)
     flo.addRow("Password", e2)
-    flo.addRow("주민번호 앞자리 ", e3)
+    flo.addRow("법정생년월일 ", e3)
     flo.addRow("상품명", e4)
     flo.addRow(cal_lb)
     flo.addRow(cal)
     flo.addRow("회차", e6)
     flo.addRow("할인 유형", e7)
-    flo.addRow("은행", e8)
+    flo.addRow("좌석 등급", e8)
+    flo.addRow("은행", e9)
     flo.addRow(b1)
 
 # 입력창 옵션 설정
@@ -213,7 +229,7 @@ if __name__ == '__main__':
     win.setFont(QFont("consolas"))
     win.show()
 
-    # loop 경계선
+# loop 경계선
     app.exec_()
 
 # 정상적인 접근인지 확인
@@ -236,12 +252,20 @@ if __name__ == '__main__':
     QDate = cal_lb.text()
     userTime = e6.text()
     userTicket = e7.text().strip()
-    userBank = e8.currentText().strip()
+    userBank = e9.currentText().strip()
 
     # 예매일 입력값 사용가능한 형태로 재배치
     userDate = QDate[QDate.index(": ") + 2:QDate.index("년")]
     userDate = userDate + QDate[QDate.index("년") + 2:QDate.index("월")].rjust(2, '0')
     userDate = userDate + QDate[QDate.index("월") + 2:QDate.index("일")].rjust(2, '0')
+
+    # 좌석 등급 체크여부 확인
+    cbCheck = [0, 0, 0, 0, 0]
+    if cb1.isChecked() == True : cbCheck[0] = 1
+    if cb2.isChecked() == True : cbCheck[1] = 1
+    if cb3.isChecked() == True : cbCheck[2] = 1
+    if cb4.isChecked() == True : cbCheck[3] = 1
+    if cb5.isChecked() == True : cbCheck[4] = 1
 
     # 은행 입력값 사용가능한 형태로 재배치
     if userBank.find("농협") != -1: userBank = 38052
@@ -262,10 +286,65 @@ if __name__ == '__main__':
         url = 'C:/chromedriver_win32/chromedriver'  # 드라이브가 있는 경로
         driver = webdriver.Chrome(url)
 
+    # 검색어 타입에 따라 루트1, 루트2 분기 발생
+    # 루트 1 : 링크로 입력했을 경우
+        if userSearch.startswith('http://ticket.interpark.com/Ticket') :
+            driver.get(userSearch)
+
+    # 루트 2 : 링크가 아닌 타입일 경우
         # 인터파크 화면 띄우기
-        driver.get("https://ticket.interpark.com/Gate/TPLogin.asp?CPage=B&MN=Y&tid1=main_gnb&tid2=right_top&tid3=login&tid4=login")
+        else :
+            driver.get("http://ticket.interpark.com/?smid1=header&smid2=ticket")
+
+        # 검색
+            # 검색어 입력
+            driver.find_element_by_xpath("//div[@class='box']//input[@id='Nav_SearchWord']").send_keys(userSearch)
+
+            # 검색 버튼 누르기
+            driver.execute_script('Nav_Search(); return false;')
+
+            # 검색 상위 오류
+            try:
+                alert = driver.switch_to_alert()
+                alert.accept()
+            except:
+                elem = ''
+
+            # 활동로그
+            log(userSearch + " 검색")
+
+        # 예매하기_1
+            # 공연예매권 예외처리
+            if userSearch.find('공연예매권') == -1 :
+                # 공연예매권 미 입력시
+                infoIDX = 1
+                while(True):
+                    # 쇼케이스 존재 여부
+                    if infoIDX == 1 :
+                        try: info = driver.find_element_by_xpath('//*[@id="type1_list"]/div/div[2]/dl/dt/h4/a')
+                        except:
+                            info = driver.find_element_by_xpath('//*[@id="play_list"]/tr[1]/td[1]/div/dl/dt/h4/a')
+                            infoIDX = 2
+                    else: info = driver.find_element_by_xpath('//*[@id="play_list"]/tr[' + str(infoIDX - 1) + ']/td[1]/div/dl/dt/h4/a')
+
+                    # 공연예매권 포함 여부 확인
+                    if info.text.find('공연예매권') > -1 :
+                        # 공연예매권이 있을 경우
+                        infoIDX += 1
+                        continue
+                    else :
+                        # 공연예매권이 없을 경우
+                        info.click()
+                        break
+            else :
+                # 공연예매권 입력시
+                try: driver.find_element_by_xpath('//*[@id="play_list"]/tr[1]/td[1]/div/dl/dt/h4/a').click()
+                except: driver.find_element_by_xpath('//*[@id="type1_list"]/div/div[2]/dl/dt/h4/a').click()
 
     # 로그인
+        # 로그인 페이지
+        driver.find_element_by_xpath('//*[@id="imgLogin"]').click()
+
         # ID, PW 입력하기
         driver.find_element_by_name('UID').send_keys(userID)  # ID 입력
         driver.find_element_by_name('PWD').send_keys(userPW)  # PW 입력
@@ -278,27 +357,6 @@ if __name__ == '__main__':
 
         # 페이지 로딩 대기
         time.sleep(0.5)
-
-    # 검색
-        # 검색어 입력 (뮤지컬 레베카, 현대카드 체인스모커스 부산, 쏜애플 콘서트 ‘불구경’)
-        driver.find_element_by_xpath("//div[@class='box']//input[@id='Nav_SearchWord']").send_keys(userSearch)
-
-        # 검색 버튼 누르기
-        driver.execute_script('Nav_Search(); return false;')
-
-        # 검색 상위 오류
-        try:
-            alert = driver.switch_to_alert()
-            alert.accept()
-        except:
-            elem = ''
-
-        # 활동로그
-        log(userSearch + " 검색")
-
-    # 예매하기_1
-        # 예매하기 _2 로 이동하기
-        driver.find_element_by_xpath("//div[@class='Poster']//img").click()
 
     # 예매하기_2
         # 예매창 열기
@@ -325,93 +383,98 @@ if __name__ == '__main__':
             elem = ''
 
     # 관람일/회차선택 (1단계)
-        # 날짜
-        # 1단계 프레임 받아오기
-        frame = driver.find_element_by_id('ifrmBookStep')
-        driver.switch_to.frame(frame)
-
-        # 달(月) 바꾸기
-        # 현재 날짜 정보 가져오기
-        #print(driver.page_source)
-        YY = driver.find_element_by_xpath("//div[@class='month']//span[2]//em[1]").text
-        MM = driver.find_element_by_xpath("//div[@class='month']//span[2]//em[2]").text
-        if len(MM) < 2: MM = "0" + MM
-        YYMM = YY + MM
-
-        # 사용자 입력값에서 연도와 월만 따로 추출한다.
-        userYYMM = userDate[:6]
-
-        # 결과에 따라 달을 바꿔 준다
-        while YYMM < userYYMM:
-            # 12월인지 아닌지 확인한다.
-            if MM == "12":
-                MM = "01"
-                YY = int(YY) + 1
-                YYMM = str(YY) + str(MM)
-            else:
-                MM = int(MM) + 1
-                if len(str(MM)) < 2: MM = "0" + str(MM)
-                YYMM = str(YY) + str(MM)
-
-            # 달을 바꾼다.
-            driver.execute_script("javascript: fnChangeMonth('" + YYMM + "');")
-
-        # 날짜 선택하기
-        # 달력 정보 가져오기
-        #print(driver.page_source)
-        bs4 = BeautifulSoup(driver.page_source, "html.parser")
-        calender = bs4.findAll('a', id='CellPlayDate')
-        elem = calender[0]["onclick"]
-
-        # 사용자의 입력값과 일치하는 함수를 찾는다.
-        for i in range(0, len(calender)):
-            if "fnSelectPlayDate(" + str(i) + ", '" + userDate + "')" == calender[i]["onclick"]:
-                elem = "fnSelectPlayDate(" + str(i) + ", '" + userDate + "')"
-                break
-
-        # 날짜 선택하기
-        driver.execute_script("javascript:" + elem)
-
-        # 페이지 로딩 대기
-        time.sleep(0.5)
-
-        # 회차
-        # 회차 정보 가져오기
-        #print(driver.page_source)
-        bs4 = BeautifulSoup(driver.page_source, "html.parser")
-        timeList = bs4.find('div', class_='scrollY').find('span', id='TagPlaySeq').findAll('a', id='CellPlaySeq')
-
-        # 회차 유효성 검사
         try:
-            if int(userTime[0]) <= len(timeList):
-                elem = timeList[int(userTime[0]) - 1]["onclick"]
-            else:
+            # 날짜
+            # 1단계 프레임 받아오기
+            frame = driver.find_element_by_id('ifrmBookStep')
+            driver.switch_to.frame(frame)
+
+            # 달(月) 바꾸기
+            # 현재 날짜 정보 가져오기
+            #print(driver.page_source)
+            YY = driver.find_element_by_xpath("//div[@class='month']//span[2]//em[1]").text
+            MM = driver.find_element_by_xpath("//div[@class='month']//span[2]//em[2]").text
+            if len(MM) < 2: MM = "0" + MM
+            YYMM = YY + MM
+
+            # 사용자 입력값에서 연도와 월만 따로 추출한다.
+            userYYMM = userDate[:6]
+
+            # 결과에 따라 달을 바꿔 준다
+            while YYMM < userYYMM:
+                # 12월인지 아닌지 확인한다.
+                if MM == "12":
+                    MM = "01"
+                    YY = int(YY) + 1
+                    YYMM = str(YY) + str(MM)
+                else:
+                    MM = int(MM) + 1
+                    if len(str(MM)) < 2: MM = "0" + str(MM)
+                    YYMM = str(YY) + str(MM)
+
+                # 달을 바꾼다.
+                driver.execute_script("javascript: fnChangeMonth('" + YYMM + "');")
+
+            # 날짜 선택하기
+            # 달력 정보 가져오기
+            #print(driver.page_source)
+            bs4 = BeautifulSoup(driver.page_source, "html.parser")
+            calender = bs4.findAll('a', id='CellPlayDate')
+            elem = calender[0]["onclick"]
+
+            # 사용자의 입력값과 일치하는 함수를 찾는다.
+            for i in range(0, len(calender)):
+                if "fnSelectPlayDate(" + str(i) + ", '" + userDate + "')" == calender[i]["onclick"]:
+                    elem = "fnSelectPlayDate(" + str(i) + ", '" + userDate + "')"
+                    break
+
+            # 날짜 선택하기
+            driver.execute_script("javascript:" + elem)
+
+            # 페이지 로딩 대기
+            time.sleep(0.5)
+
+            # 회차
+            # 회차 정보 가져오기
+            #print(driver.page_source)
+            bs4 = BeautifulSoup(driver.page_source, "html.parser")
+            timeList = bs4.find('div', class_='scrollY').find('span', id='TagPlaySeq').findAll('a', id='CellPlaySeq')
+
+            # 회차 유효성 검사
+            try:
+                if int(userTime[0]) <= len(timeList):
+                    elem = timeList[int(userTime[0]) - 1]["onclick"]
+                else:
+                    elem = timeList[0]["onclick"]
+            except:
                 elem = timeList[0]["onclick"]
+
+            # 회차 선택하기
+            driver.execute_script("javascript:" + elem)
+
+            # 다음단계
+            # 메인 프레임 받아오기
+            driver.switch_to.default_content()
+
+            # 2단계 넘어가기
+            driver.execute_script("javascript:fnNextStep('P');")
+
+            # 당일 예매 경고창 감지
+            try:
+                alert = driver.switch_to_alert()
+                alert.accept()
+            except:
+                elem = ''
+
+            # 활동로그
+            log("관람일/회차선택")
+
+            # 페이지 로딩 대기
+            time.sleep(0.5)
+
         except:
-            elem = timeList[0]["onclick"]
-
-        # 회차 선택하기
-        driver.execute_script("javascript:" + elem)
-
-        # 다음단계
-        # 메인 프레임 받아오기
-        driver.switch_to.default_content()
-
-        # 2단계 넘어가기
-        driver.execute_script("javascript:fnNextStep('P');")
-
-        # 당일 예매 경고창 감지
-        try:
-            alert = driver.switch_to_alert()
-            alert.accept()
-        except:
-            elem = ''
-
-        # 활동로그
-        log("관람일/회차선택")
-
-        # 페이지 로딩 대기
-        time.sleep(0.5)
+            # 관람일/회차선택 단계가 없을 경우
+            elem=''
 
     # 좌석 선택 (2단계)
         # 안심 예매
@@ -476,8 +539,10 @@ if __name__ == '__main__':
 
                 # Captcha 값 입력하기
                 #print(driver.page_source)
+                if captcha.text() == "": text = "ERROR"
+                else: text = captcha.text()
                 driver.find_element_by_xpath("//div[@class='validationTxt']//span").click()
-                driver.find_element_by_xpath("//input[@id='txtCaptcha']").send_keys(captcha.text())
+                driver.find_element_by_xpath("//input[@id='txtCaptcha']").send_keys(text)
 
                 # Captcha 입력완료
                 driver.execute_script("javascript:fnCheck();")
@@ -536,10 +601,30 @@ if __name__ == '__main__':
 
                     # 좌석 정보를 읽어온다.
                     bs4 = BeautifulSoup(driver.page_source, "html.parser")
-                    seat = bs4.find('img', class_='stySeat')
+                    seatList = bs4.findAll('img', class_='stySeat')
 
-                    # 좌석 유무를 확인한다.
-                    try:
+                    # 좌석 등급 조건에 따른 가부
+                    for i in range(0, len(seatList)):
+                        seat = seatList[i]
+                        text = seat['alt'][seat['alt'].find('[') + 1:seat['alt'].find('석')]
+                        if (text.find("VIP") == True) & (cbCheck[0] == 1):
+                            seatch = True
+                            break
+                        if (text.find("R") == True) & (cbCheck[1] == 1):
+                            seatch = True
+                            break
+                        if (text.find("S") == True) & (cbCheck[2] == 1):
+                            seatch = True
+                            break
+                        if (text.find("A") == True) & (cbCheck[3] == 1):
+                            seatch = True
+                            break
+                        if cbCheck[4] == 1:
+                            seatch = True
+                            break
+
+                    # 좌석 유무를 검사한다.
+                    if seatch == True:
                         # 좌석이 있을 경우
                         # 좌석 선택하기
                         driver.execute_script(seat['onclick'] + ";")
@@ -559,9 +644,9 @@ if __name__ == '__main__':
                         time.sleep(0.5)
 
                         # 반복문 종료
-                        seatch = True
                         break
-                    except:
+
+                    else:
                         # 좌석이 없을 경우
                         # 미니맵 프레임 받아오기
                         driver.switch_to.default_content()
@@ -599,80 +684,107 @@ if __name__ == '__main__':
                             elem = ''
 
         else :
-            # 미니맵이 존재하지 않을 경우
-            # 좌석 프레임 받아오기
-            driver.switch_to.default_content()
-            frame = driver.find_element_by_id('ifrmSeat')
-            driver.switch_to.frame(frame)
-            frame = driver.find_element_by_id('ifrmSeatDetail')
-            driver.switch_to.frame(frame)
+            try:
+                # 미니맵이 존재하지 않을 경우
+                # 좌석 프레임 받아오기
+                driver.switch_to.default_content()
+                frame = driver.find_element_by_id('ifrmSeat')
+                driver.switch_to.frame(frame)
+                frame = driver.find_element_by_id('ifrmSeatDetail')
+                driver.switch_to.frame(frame)
 
-            # 구역 존재여부 검사
-            bs4 = BeautifulSoup(driver.page_source, "html.parser")
+                # 구역 존재여부 검사
+                bs4 = BeautifulSoup(driver.page_source, "html.parser")
 
-            # 미니맵 = X, 구역 = O
-            if bs4.find('map') != None :
-                # 구역이 존재할 경우
-                # 구역 리스트 받아오기
-                areaList = bs4.findAll('area')
+                # 미니맵 = X, 구역 = O
+                if bs4.find('map') != None :
+                    # 구역이 존재할 경우
+                    # 구역 리스트 받아오기
+                    areaList = bs4.findAll('area')
 
-                # 빈 좌석 찾기
-                seatch = False
-                while seatch != True :
-                    for i in range(0, len(areaList)) :
-                        # 좌석 프레임 받아오기
-                        driver.switch_to.default_content()
-                        frame = driver.find_element_by_id('ifrmSeat')
-                        driver.switch_to.frame(frame)
-                        frame = driver.find_element_by_id('ifrmSeatDetail')
-                        driver.switch_to.frame(frame)
-
-                        # 구역 바꾸기
-                        driver.execute_script(areaList[i]["href"])
-
-                        # 좌석 유무를 확인한다.
-                        try:
-                            # 좌석이 있을 경우
-                            # 좌석 선택하기
-                            driver.find_element_by_xpath("//span[@value='N']").click()
-
-                            # 2단계 프레임 받아오기
+                    # 빈 좌석 찾기
+                    seatch = False
+                    while seatch != True :
+                        for i in range(0, len(areaList)) :
+                            # 좌석 프레임 받아오기
                             driver.switch_to.default_content()
                             frame = driver.find_element_by_id('ifrmSeat')
                             driver.switch_to.frame(frame)
-
-                            # 3단계 넘어가기
-                            driver.execute_script("javascript:fnSelect();")
-
-                            # 활동로그
-                            log("빈좌석 찾기 성공")
-
-                            # 페이지 로딩 대기
-                            time.sleep(0.5)
-
-                            # 반복문 종료
-                            seatch = True
-                            break
-                        except:
-                            # 좌석이 없을 경우
-                            # 2단계 프레임 받아오기
-                            driver.switch_to.default_content()
-                            frame = driver.find_element_by_id('ifrmSeat')
+                            frame = driver.find_element_by_id('ifrmSeatDetail')
                             driver.switch_to.frame(frame)
 
-                            # 좌석도 전체보기
-                            driver.execute_script("javascript:fnSeatUpdate();")
+                            # 구역 바꾸기
+                            driver.execute_script(areaList[i]["href"])
 
-                            # 페이지 로딩 대기
-                            time.sleep(0.5)
+                            # 좌석 정보를 읽어온다.
+                            bs4 = BeautifulSoup(driver.page_source, "html.parser")
+                            seatList = bs4.findAll('span', value='N')
 
-                            # 좌석을 불러오기 경고창 감지
-                            try:
-                                alert = driver.switch_to_alert()
-                                alert.accept()
-                                time.sleep(3)
-                            except:
-                                elem = ''
+                            # 좌석 등급 조건에 따른 가부
+                            for i in range(0, len(seatList)):
+                                seat = seatList[i]
+                                text = seat['title'][seat['title'].find('[') + 1:seat['title'].find('석')]
+                                if (text.find("VIP") == True) & (cbCheck[0] == 1):
+                                    seatch = True
+                                    break
+                                if (text.find("R") == True) & (cbCheck[1] == 1):
+                                    seatch = True
+                                    break
+                                if (text.find("S") == True) & (cbCheck[2] == 1):
+                                    seatch = True
+                                    break
+                                if (text.find("A") == True) & (cbCheck[3] == 1):
+                                    seatch = True
+                                    break
+                                if cbCheck[4] == 1:
+                                    seatch = True
+                                    break
+
+                            # 좌석 유무를 검사한다.
+                            if seatch == True:
+                                # 좌석이 있을 경우
+
+                                # 2단계 프레임 받아오기
+                                driver.switch_to.default_content()
+                                frame = driver.find_element_by_id('ifrmSeat')
+                                driver.switch_to.frame(frame)
+
+                                # 3단계 넘어가기
+                                driver.execute_script("javascript:fnSelect();")
+
+                                # 활동로그
+                                log("빈좌석 찾기 성공")
+
+                                # 페이지 로딩 대기
+                                time.sleep(0.5)
+
+                                # 반복문 종료
+                                seatch = True
+                                break
+
+                            else:
+                                # 좌석이 없을 경우
+                                # 2단계 프레임 받아오기
+                                driver.switch_to.default_content()
+                                frame = driver.find_element_by_id('ifrmSeat')
+                                driver.switch_to.frame(frame)
+
+                                # 좌석도 전체보기
+                                driver.execute_script("javascript:fnSeatUpdate();")
+
+                                # 페이지 로딩 대기
+                                time.sleep(0.5)
+
+                                # 좌석을 불러오기 경고창 감지
+                                try:
+                                    alert = driver.switch_to_alert()
+                                    alert.accept()
+                                    time.sleep(3)
+                                except:
+                                    elem = ''
+            except:
+                # 좌석 선택 단계가 없을 경우
+                elem = ''
 
             # 미니맵 = X, 구역 = X
             else :
@@ -688,13 +800,33 @@ if __name__ == '__main__':
 
                     # 좌석 정보를 읽어온다.
                     bs4 = BeautifulSoup(driver.page_source, "html.parser")
-                    seat = bs4.find('img', class_='stySeat')
+                    seatList = bs4.findAll('img', class_='stySeat')
 
-                    # 좌석 유무를 확인한다.
-                    try:
+                    # 좌석 등급 조건에 따른 가부
+                    for i in range(0, len(seatList)):
+                        seat = seatList[i]
+                        text = seat['alt'][seat['alt'].find('[') + 1:seat['alt'].find('석')]
+                        if (text.find("VIP") == True) & (cbCheck[0] == 1):
+                            seatch = True
+                            break
+                        if (text.find("R") == True) & (cbCheck[1] == 1):
+                            seatch = True
+                            break
+                        if (text.find("S") == True) & (cbCheck[2] == 1):
+                            seatch = True
+                            break
+                        if (text.find("A") == True) & (cbCheck[3] == 1):
+                            seatch = True
+                            break
+                        if cbCheck[4] == 1:
+                            seatch = True
+                            break
+
+                    # 좌석 유무를 검사한다.
+                    if seatch == True:
                         # 좌석이 있을 경우
                         # 좌석 선택하기
-                        driver.execute_script(seat['onclick'] + ";")
+                        driver.find_element_by_xpath("//span[@title='" + seat['title'] + "']").click()
 
                         # 2단계 프레임 받아오기
                         driver.switch_to.default_content()
@@ -710,7 +842,8 @@ if __name__ == '__main__':
                         # 페이지 로딩 대기
                         time.sleep(0.5)
                         break
-                    except:
+
+                    else:
                         # 2단계 프레임 받아오기
                         driver.switch_to.default_content()
                         frame = driver.find_element_by_id('ifrmSeat')
