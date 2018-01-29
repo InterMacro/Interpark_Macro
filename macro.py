@@ -610,16 +610,16 @@ if __name__ == '__main__':
                         for i in range(0, len(seatList)):
                             seat = seatList[i]
                             text = seat['alt'][seat['alt'].find('[') + 1:seat['alt'].find('석')]
-                            if (text == "VIP") & (cbCheck[0] == 1):
+                            if (text[:3] == "VIP") & (cbCheck[0] == 1):
                                 seatch = True
                                 break
-                            if (text == "R") & (cbCheck[1] == 1):
+                            if (text[:1] == "R") & (cbCheck[1] == 1):
                                 seatch = True
                                 break
-                            if (text == "S") & (cbCheck[2] == 1):
+                            if (text[:1] == "S") & (cbCheck[2] == 1):
                                 seatch = True
                                 break
-                            if (text == "A") & (cbCheck[3] == 1):
+                            if (text[:1] == "A") & (cbCheck[3] == 1):
                                 seatch = True
                                 break
                             if cbCheck[4] == 1:
@@ -702,7 +702,6 @@ if __name__ == '__main__':
 
                 # 미니맵 = X, 구역 = O
                 if bs4.find('map') != None :
-                    print("test")
                     # 구역이 존재할 경우
                     # 구역 리스트 받아오기
                     areaList = bs4.findAll('area')
@@ -730,17 +729,17 @@ if __name__ == '__main__':
                                 # 좌석 등급 조건에 따른 가부
                                 for i in range(0, len(seatList)):
                                     seat = seatList[i]
-                                    text = seat['title'][seat['title'].find('[') + 1:seat['title'].find('석')]
-                                    if (text == "VIP") & (cbCheck[0] == 1):
+                                    text = seat['title'][seat['title'].find('[') + 1:]
+                                    if (text[:3] == "VIP") & (cbCheck[0] == 1):
                                         seatch = True
                                         break
-                                    if (text == "R") & (cbCheck[1] == 1):
+                                    if (text[:1] == "R") & (cbCheck[1] == 1):
                                         seatch = True
                                         break
-                                    if (text == "S") & (cbCheck[2] == 1):
+                                    if (text[:1] == "S") & (cbCheck[2] == 1):
                                         seatch = True
                                         break
-                                    if (text == "A") & (cbCheck[3] == 1):
+                                    if (text[:1] == "A") & (cbCheck[3] == 1):
                                         seatch = True
                                         break
                                     if cbCheck[4] == 1:
@@ -750,6 +749,8 @@ if __name__ == '__main__':
                                 # 좌석 유무를 검사한다.
                                 if seatch == True:
                                     # 좌석이 있을 경우
+                                    # 좌석 선택하기
+                                    driver.execute_script(seat['onclick'] + ";")
 
                                     # 2단계 프레임 받아오기
                                     driver.switch_to.default_content()
@@ -771,6 +772,7 @@ if __name__ == '__main__':
 
                             # 좌석이 존재하지 않을 경우 error O -> except 실행
                             except:
+                                print("except_2")
                                 # 좌석이 없을 경우
                                 # 2단계 프레임 받아오기
                                 driver.switch_to.default_content()
@@ -814,16 +816,16 @@ if __name__ == '__main__':
                                 seat = seatList[i]
                                 text = seat['alt'][seat['alt'].find('[') + 1:seat['alt'].find('석')]
                                 print(text)
-                                if (text == "VIP") & (cbCheck[0] == 1):
+                                if (text[:3] == "VIP") & (cbCheck[0] == 1):
                                     seatch = True
                                     break
-                                if (text == "R") & (cbCheck[1] == 1):
+                                if (text[:1] == "R") & (cbCheck[1] == 1):
                                     seatch = True
                                     break
-                                if (text == "S") & (cbCheck[2] == 1):
+                                if (tex[:1] == "S") & (cbCheck[2] == 1):
                                     seatch = True
                                     break
-                                if (text == "A") & (cbCheck[3] == 1):
+                                if (text[:1] == "A") & (cbCheck[3] == 1):
                                     seatch = True
                                     break
                                 if cbCheck[4] == 1:
