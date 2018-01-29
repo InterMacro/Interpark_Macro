@@ -610,16 +610,16 @@ if __name__ == '__main__':
                         for i in range(0, len(seatList)):
                             seat = seatList[i]
                             text = seat['alt'][seat['alt'].find('[') + 1:]
-                            if (text[:3] == "VIP") & (cbCheck[0] == 1):
+                            if (text.find("VIP") != -1) & (cbCheck[0] == 1):
                                 seatch = True
                                 break
-                            if (text[:1] == "R") & (cbCheck[1] == 1):
+                            if (text.find("R") != -1) & (cbCheck[1] == 1):
                                 seatch = True
                                 break
-                            if (text[:1] == "S") & (cbCheck[2] == 1):
+                            if (text.find("S") != -1) & (cbCheck[2] == 1):
                                 seatch = True
                                 break
-                            if (text[:1] == "A") & (cbCheck[3] == 1):
+                            if (text.find("A") != -1) & (cbCheck[3] == 1):
                                 seatch = True
                                 break
                             if cbCheck[4] == 1:
@@ -730,16 +730,16 @@ if __name__ == '__main__':
                                 for i in range(0, len(seatList)):
                                     seat = seatList[i]
                                     text = seat['title'][seat['title'].find('[') + 1:]
-                                    if (text[:3] == "VIP") & (cbCheck[0] == 1):
+                                    if (text.find("VIP") != -1) & (cbCheck[0] == 1):
                                         seatch = True
                                         break
-                                    if (text[:1] == "R") & (cbCheck[1] == 1):
+                                    if (text.find("R") != -1) & (cbCheck[1] == 1):
                                         seatch = True
                                         break
-                                    if (text[:1] == "S") & (cbCheck[2] == 1):
+                                    if (text.find("S") != -1) & (cbCheck[2] == 1):
                                         seatch = True
                                         break
-                                    if (text[:1] == "A") & (cbCheck[3] == 1):
+                                    if (text.find("A") != -1) & (cbCheck[3] == 1):
                                         seatch = True
                                         break
                                     if cbCheck[4] == 1:
@@ -811,21 +811,22 @@ if __name__ == '__main__':
 
                         # 좌석이 존재할 경우 error X -> except 실행 X
                         try:
+                            # if Len(seatList) > 0:
                             # 좌석 등급 조건에 따른 가부
                             for i in range(0, len(seatList)):
                                 seat = seatList[i]
                                 text = seat['alt'][seat['alt'].find('[') + 1:]
                                 print(text)
-                                if (text[:3] == "VIP") & (cbCheck[0] == 1):
+                                if (text.find("VIP") != -1) & (cbCheck[0] == 1):
                                     seatch = True
                                     break
-                                if (text[:1] == "R") & (cbCheck[1] == 1):
+                                if (text.find("R") != -1) & (cbCheck[1] == 1):
                                     seatch = True
                                     break
-                                if (tex[:1] == "S") & (cbCheck[2] == 1):
+                                if (text.find("S") != -1) & (cbCheck[2] == 1):
                                     seatch = True
                                     break
-                                if (text[:1] == "A") & (cbCheck[3] == 1):
+                                if (text.find("A") != -1) & (cbCheck[3] == 1):
                                     seatch = True
                                     break
                                 if cbCheck[4] == 1:
@@ -892,7 +893,6 @@ if __name__ == '__main__':
         ticketList = bs4.findAll('select')
 
         # 사용자의 입력값과 일치하는 함수를 찾는다.
-        makeTest(driver.page_source)
         for i in range(0, len(ticketList)):
             ticketStr = ticketList[i]["pricegradename"]
             if ticketStr.find(userTicket) != -1:
@@ -1137,40 +1137,41 @@ if __name__ == '__main__':
         # 활동로그
         log("예매창 닫기")
 
-    # 이메일 보내기
-        # 보내는 주소 & 포트
-        host = 'smtp.gmail.com'
-        port = '587'
-
-        # 보내는 사람 & 받는 사람
-        sender = 'interparkmacro@gmail.com'
-        recipient = userEmail
-
-        # 메세지 객체 생성
-        msg = MIMEBase('multipart', 'mixed')
-        msg['Subject'] = '인터파크 예매내역'
-        msg['From'] = sender
-        msg['To'] = recipient
-
-        # 전달할 내용 입력
-        result = open('result.txt', 'r', encoding="utf-8").readlines()
-        resultText = ''
-        for i in range(0, len(result)):
-            resultText = resultText + result[i]
-        resultPart = MIMEText(resultText, _charset='utf-8')
-        msg.attach(resultPart)
-
-        # 이메일 보내기
-        send = smtplib.SMTP(host, port)
-        send.ehlo()
-        send.starttls()
-        send.ehlo()
-        send.login(sender, 'password:123')
-        send.sendmail(sender, [recipient], msg.as_string())
-        send.close()
-
-        # 활동로그
-        log("이메일 전송")
+    # interparkmacro 계정이 사라져서 잠시 이메일 전송은 휴업하겠습니다.
+    # # 이메일 보내기
+    #     # 보내는 주소 & 포트
+    #     host = 'smtp.gmail.com'
+    #     port = '587'
+    #
+    #     # 보내는 사람 & 받는 사람
+    #     sender = 'interparkmacro@gmail.com' # 계정이 사라짐
+    #     recipient = userEmail
+    #
+    #     # 메세지 객체 생성
+    #     msg = MIMEBase('multipart', 'mixed')
+    #     msg['Subject'] = '인터파크 예매내역'
+    #     msg['From'] = sender
+    #     msg['To'] = recipient
+    #
+    #     # 전달할 내용 입력
+    #     result = open('result.txt', 'r', encoding="utf-8").readlines()
+    #     resultText = ''
+    #     for i in range(0, len(result)):
+    #         resultText = resultText + result[i]
+    #     resultPart = MIMEText(resultText, _charset='utf-8')
+    #     msg.attach(resultPart)
+    #
+    #     # 이메일 보내기
+    #     send = smtplib.SMTP(host, port)
+    #     send.ehlo()
+    #     send.starttls()
+    #     send.ehlo()
+    #     send.login(sender, 'password:123')
+    #     send.sendmail(sender, [recipient], msg.as_string())
+    #     send.close()
+    #
+    #     # 활동로그
+    #     log("이메일 전송")
 
     # 마이페이지 접속
         # 기존 창으로 제어를 이동한다.
