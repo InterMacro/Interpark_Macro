@@ -609,7 +609,7 @@ if __name__ == '__main__':
                         # 좌석 등급 조건에 따른 가부
                         for i in range(0, len(seatList)):
                             seat = seatList[i]
-                            text = seat['alt'][seat['alt'].find('[') + 1:seat['alt'].find('석')]
+                            text = seat['alt'][seat['alt'].find('[') + 1:]
                             if (text[:3] == "VIP") & (cbCheck[0] == 1):
                                 seatch = True
                                 break
@@ -814,7 +814,7 @@ if __name__ == '__main__':
                             # 좌석 등급 조건에 따른 가부
                             for i in range(0, len(seatList)):
                                 seat = seatList[i]
-                                text = seat['alt'][seat['alt'].find('[') + 1:seat['alt'].find('석')]
+                                text = seat['alt'][seat['alt'].find('[') + 1:]
                                 print(text)
                                 if (text[:3] == "VIP") & (cbCheck[0] == 1):
                                     seatch = True
