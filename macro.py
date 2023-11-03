@@ -1,65 +1,65 @@
-# -*- encoding:utf8 -*-
+# -*- encoding:utf8 -*-# -*- 부호화:utf8 -*-
 
-from selenium import webdriver
-from bs4 import BeautifulSoup
-from urllib.request import urlretrieve
-from PIL import Image
-from PIL import ImageOps
-import smtplib
-from email.mime.base import MIMEBase
-from email.mime.text import MIMEText
-import sys
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4 import QtGui, QtCore
-import time
+from selenium import webdriver셀레늄 수입 웹드라이버에서
+from bs4 import BeautifulSoupbs4 수입 아름다운 국
+from urllib.request import urlretrievefrom urllib.request 가져오기 urlreetrieve
+from PIL import Imagefrom PIL 가져오기 이미지
+from PIL import ImageOpsfrom PIL imageOps Import
+import smtplibsmptlib 가져오기
+from email.mime.base import MIMEBasefrom e-메일.mime.base가져오기 MIMEBase
+from email.mime.text import MIMETextfrom email.mime.text가 MIMetext 가져오기
+import sys수입 시스템
+from PyQt4.PyQt4에서.QtCore import *QtCore 가져오기 *
+from PyQt4.PyQt4에서.QtGui import *QtGui 가져오기 *
+from PyQt4 import QtGui, QtCorePyQt4에서 QtGui, QtCore 가져오기
+import time수입시기
 
-# 개발자 : 박건희, 오수빈 (수정 : 박건희)
+# 개발자 : 박건희, 오수빈 (수정 : 박건희)# 개발자 : 박건희, 오수빈 (수정 : 박건희)
 
-# test 파일 만드는 함수
-def makeTest(testStr):
-    test = open("test.html", "w", encoding="utf-8")
-    test.write(testStr)
-    test.close()
+# test 파일 만드는 함수# test 파일 만드는 함수
+def makeTest(testStr):defmakeTest(testStr):
+    test = open("test.html", "w", encoding="utf-8")test = open (" test. html", "w", 인코딩="utf-8")
+    test.write(testStr)test.write(testStr)
+    test.close()시험.닫다
 
-# 이미지를 선명하게 바꿔주는 함수
-def cleanImage(imagePath):
-    image = Image.open(imagePath)
-    image = image.point(lambda x: 0 if x < 180 else 220)
-    borderImage = ImageOps.expand(image, border=0, fill='white')
-    borderImage.save(imagePath)
-    borderImage.close()
+# 이미지를 선명하게 바꿔주는 함수# 이미지를 선명하게 바꿔주는 함수
+def cleanImage(imagePath):defcleanImage(imagePath):
+    image = Image.open(imagePath)image = Image.open(imagePath)
+    image = image.image = image.point(lambda x: 0 if x < 180 else 220)점 (lambda x: 0이면 x < 180이면 220)
+    borderImage = ImageOps.expand(image, border=0, fill='white')borderImage = ImageOps.expand(이미지, border=0, 채우기='흰색')
+    borderImage.save(imagePath)borderImage.save(imagePath)
+    borderImage.close()borderImage.close()
 
-# 활동로그를 기록하는 함수
-def log(logText):
-    # 현재 시간을 구한다.
-    now = time.localtime()
-    nowTime = "%04d-%02d-%02d %02d:%02d:%02d" % (
-        now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec)
+# 활동로그를 기록하는 함수# 활동로그를 기록하는 함수
+def log(logText):deflog(logText):
+    # 현재 시간을 구한다.# 현재 시간을 구한다.
+    now = time.localtime()now = time.local time
+    nowTime = "%04d-%02d-%02d %02d:%02d:%02d" % (nowTime = "%04d-%02d-%02d %02d:%02d" % (
+        now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec)now.tm _year, now.tm _mon, now.tm _mday, now.tm _hour, now.tm _min, now.tm _sec)
 
-    # 활동로그를 기록한다.
-    log = open("log.txt", "a", encoding="utf-8")
-    log.write("[" + nowTime + "] " + str(logText) + "\n")
-    log.close()
+    # 활동로그를 기록한다.# 활동로그를 기록한다.
+    log = open("log.txt", "a", encoding="utf-8")log = open ("log.txt", "a", encoding="utf-8")
+    log.write("[" + nowlog.write ("[" + now]Time + "] " + str(logText) + "\n")시간 + "] " + str(logText) + "\n")
+    log.close()log.close
 
-# 날짜 바꿀 때마다 선택된 날짜 정보 바꾸는 함수
-def showDate():
-    now = cal.selectedDate().toString()[2:]
-    cal_lb.setText("<span style='color:#A90000'>선택된 날짜 : " + now[now.rindex(' ') + 1:] + "년 " + now[:now.index(' ')] + "월 "
-            + now[now.index(' ') + 1:now.rindex(' ')] + "일</span>")
+# 날짜 바꿀 때마다 선택된 날짜 정보 바꾸는 함수# 날짜 바꿀 때마다 선택된 날짜 정보 바꾸는 함수
+def showDate():def showDate():
+    now = cal.이제 = cal.selectedDate().toString()[2:]날짜(.)를 문자열()[2:]로 선택했습니다.
+    cal_lb.setText("<span style='color:cal_lb.setText("<span style='color:#A90000'>선택된 날짜 : " + now[now.rindex(' ') + 1:] + "년 " + now[:now.index(' ')] + "월 "#A90000'>선택된 날짜 : " + now[now.rindex(')' + 1:] + "년" + now[:now.index(')'] + "월"
+            + now[now.index(' ') + 1:now.rindex(' ')] + "일</span>")+ now[now.index (' ') + 1:now.rindex (' ')] + "일</span>)"
 
-# 포커스 이동 함수
-def nextFocus_1() :
-    e2.setFocus()
-    e2.selectAll()
-def nextFocus_2() :
-    e3.setFocus()
-    e3.selectAll()
-def nextFocus_3() :
-    e4.setFocus()
-    e4.selectAll()
-def nextFocus_4() :
-    cal.setFocus()
+# 포커스 이동 함수# 포커스 이동 함수
+def nextFocus_1() :def nextFocus_1():
+    e2.setFocus()e2.setFocus()
+    e2.selectAll()e2.모두선택()
+def nextFocus_2() :def nextFocus_2():
+    e3.setFocus()e3.setFocus()
+    e3.selectAll()e3.모두선택()
+def nextFocus_3() :def nextFocus_3():
+    e4.setFocus()e4.setFocus()
+    e4.selectAll()e4.모두선택()
+def nextFocus_4() :def nextFocus_4():
+    cal.setFocus()cal.setFocus()
 def nextFocus_5() :
     e6.setFocus()
     e6.selectAll()
@@ -82,76 +82,78 @@ def close_1():
     # 사용자 압력값 유효성검사
     if (str(e1.text()) == "") | (str(e2.text()) == "") | (str(e3.text()) == "") | (len(str(e3.text())) < 6) | (str(e4.text()) == "") | (str(e6.text()) == "회차") | (str(e7.text()) == "") | ((cb1.isChecked() | cb2.isChecked() | cb3.isChecked() | cb4.isChecked() | cb5.isChecked()) == False):
         if str(e1.text()) == "" :
-            msg("ID를 입력하십시오.")
+            msg("qfwgfb8wfc")
             e1.setFocus()
         elif str(e2.text()) == "" :
-            msg("Password를 입력하십시오.")
+            msg("t1a1k0y8e")
             e2.setFocus()
         elif str(e3.text()) == "" :
-            msg("법정생년월일을 입력하십시오.")
+            msg("101108")
             e3.setFocus()
         elif len(str(e3.text())) < 6 :
-            msg("법정생년월일을 전부 입력하십시오.")
+            msg("20101108")
             e3.setFocus()
         elif str(e4.text()) == "" :
-            msg("상품명을 입력하십시오.")
+            msg("TOMORROW X TOGETHER WORLD TOUR
+{ACT: SWEET MIRAGE) FINALE")
             e4.setFocus()
         elif str(e6.text()) == "회차" :
-            msg("회차를 입력하십시오.")
+            msg("1")
             e6.setFocus()
         elif str(e7.text()) == "" :
             msg("할인을 입력하십시오.")
-            e7.setFocus()
-        elif cb1.isChecked() == False :
-            msg("좌석등급을 선택하십시오.")
-            cb1.setFocus()
-    else:
-        win.close()
-        ch.setText("True")
+            e7.setFocus()e7.setFocus()()()e7.setFocus()()e7.setFocus()
+        elif cb1.isChecked() == False :elif cb1.elif cb1.는 Checked() == False : elif cb1입니다.가 체크됨() == False:가 체크됨() == False:
+            msg("vip")msg ("vip")
+            cb1.setFocus()cb1.setFocus()
+    else:기타:
+        win.close()아슬아슬하게 이기다
+        ch.setText("True")ch.setText("True")
 
-# captcha 입력창 닫아주는 함수
-def close_2():
-    win.close()
+# captcha 입력창 닫아주는 함수# captcha 입력창 닫아주는 함수
+def close_2():def close_2 ():
+    win.close()아슬아슬하게 이기다
 
-# 경고창을 띄우는 함수
-def msg(str):
-    QMessageBox.information(win, "error!", str)
+# 경고창을 띄우는 함수# 경고창을 띄우는 함수
+def msg(str):defmsg(str):
+    QMessageBox.information(win, "error!", str)QMessageBox.information(승, "error!", str)
 
-# main
-if __name__ == '__main__':
-# 프로그램 시작
-    # 활동로그
-    log("프로그램 시작")
+# main# 본심의
+if __name__ == '__main__':if __name__ == '__main__':
+# 프로그램 시작# 프로그램 시작
+    # 활동로그# 활동로그
+    log("프로그램 시작")log("프로그램 시작")
 
-# 전역변수 선언 - 함수 호출을 위해서
-    global e1, e2, e3, e4, cal, e6, e7, b1, ch, win
-    global cb1, cb2, cb3, cb4, cb5
+# 전역변수 선언 - 함수 호출을 위해서# 전역변수 선언 - 함수 호출을 위해서# 전역변수 선언 - 함수 호출을 위해서# 전역변수 선언 - 함수 호출을 위해서
+    global e1, e2, e3, e4, cal, e6, e7, b1, ch, win글로벌 e1, e2, e3, e4, cal, e6, e7, b1, ch, win
+    global cb1, cb2, cb3, cb4, cb5전역 cb1, cb2, cb3, cb4, cb5글로벌 cb1, cb2, cb3, cb4, cb5 전역 cb1, cb2, cb3, cb4, cb5
 
-# 입력창 띄우기
-    app = QtGui.QApplication(sys.argv)
-    win = QWidget()
-    win.keyPressEvent = esc
+# 입력창 띄우기# 입력창 띄우기
+    app = QtGui.app = QtGui.app = QtGui.app = QtGui.QApplication(sys.argv)QA 애플리케이션(sys.argv)QA 애플리케이션(sys.argv)QA 애플리케이션(sys.argv)
+    win = QWidget()win = QWidget()win = QWidget()win = QWidget()win = QWidget() win = QWidget() win = QWidget() win = QWidget() win = QWidget()
+    win.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = esc를 누릅니다.win.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent = escwin.keyPressEvent 를 누릅니다.
 
-# 위젯 설정
-    # ID
-    e1 = QLineEdit(win)
-    e1.setPlaceholderText("ID를 입력해주세요")
-    e1.setFocus()
+# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정# 위젯 설정
+    # ID# 신분증# ID# 신분증# ID# 신분증# ID# 신분증# ID# 신분증# ID# 신분증# ID# 신분증# ID# 신분증
+    e1 = QLineEdit(win)e1 = QLine편집(승)e1 = QLine 편집(승)e1 = QLine 편집(승)e1 = QLine Edit(win)e1 = QLine 편집(승)e1 = QLine 편집(승)e1 = QLine 편집(승)e1 = QLine Edit(win)e1 = QLine 편집(승)e1 = QLine 편집(승)e1 = QLine 편집(win)e1 = QLine Edit(win)e1 = QLine 편집(승)e1 = QLine 편집(승)e1 = QLine 편집(승)e1 = QLine 승(승)
+    e1.setPlaceholderText("e1.set 자리 표시자 텍스트("e1.set 플레이스홀더 텍스트("e1.set 자리 표시자 텍스트(")e1.setPlaceholderText("e1.set 자리 표시자 텍스트("e1.set 플레이스홀더 텍스트("e1.set 자리 표시자 텍스트(")e1.setPlaceholderText("e1.set 자리 표시자 텍스트("e1.set 플레이스홀더 텍스트("e1.set 자리 표시자 텍스트(")e1.setPlaceholderText("e1.set 자리 표시자 텍스트("e1.set 플레이스홀더 텍스트("e1.set 자리 표시자 텍스트(")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")ID를 입력해주세요")
+    e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus().setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.setFocus()e1.
 
-    # pw
-    e2 = QLineEdit(win)
-    e2.setPlaceholderText("Password를 입력해주세요")
-    e2.setEchoMode(QLineEdit.Password)
+    # pw# pw# pw# pw# pw#pw#pw#pw#pw# pw#pw#pw#pw#pw#pw#pw#pw#pw#pw
+    e2 = QLineEdit(win)e2 = QLine편집(승)e2 = QLine 편집(승) e2 = QLine 편집(승)e2 = QLine Edit(win)e2 = QLine 편집(승)e2 = QLine 편집(승)e2 = QLine 편집(승)e2 = QLine Edit(win)e2 = QLine 편집(승)e2 = QLine 편집(승)e2 = QLine 편집(승)e2 = QLine Edit(win)e2 = QLine 편집(승)e2 = QLine 편집(승)e2 = QLine 편집(승)e2
+    e2.setPlaceholderText("Password를 입력해주세요")e2.e2.setPlaceholderText("비밀번호 를 입력해주세요")e2.set 플레이스홀더 텍스트("비밀번호 를 입력해주세요")set 플레이스홀더 텍스트("비밀번호 를 입력해주세요")
+    e2.setEchoMode(QLineEdit.e2.setEchoMode(QLineEdit).Password)비밀번호)
 
     # 주민등록번호
     e3 = QLineEdit(win)
     e3.setMaxLength(6)
-    e3.setPlaceholderText("생년월일을 입력해주세요")
+    e3.setPlaceholderText("20101108")
     e3.setValidator(QIntValidator())
 
     # 상품명
     e4 = QLineEdit(win)
-    e4.setPlaceholderText("상품명을 입력해주세요")
+    e4.setPlaceholderText("TOMORROW X TOGETHER WORLD TOUR
+{ACT: SWEET MIRAGE) FINALE"){ACT : 스윗 미라지) 피날레")
 
     # 날짜 정보
     cal = QCalendarWidget(win)
