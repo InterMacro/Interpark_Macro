@@ -82,28 +82,28 @@ def close_1():
     # 사용자 압력값 유효성검사
     if (str(e1.text()) == "") | (str(e2.text()) == "") | (str(e3.text()) == "") | (len(str(e3.text())) < 6) | (str(e4.text()) == "") | (str(e6.text()) == "회차") | (str(e7.text()) == "") | ((cb1.isChecked() | cb2.isChecked() | cb3.isChecked() | cb4.isChecked() | cb5.isChecked()) == False):
         if str(e1.text()) == "" :
-            msg("ID를 입력하십시오.")
+            msg("qfwgfb8wfc")
             e1.setFocus()
         elif str(e2.text()) == "" :
-            msg("Password를 입력하십시오.")
+            msg("t1a1k0y8e")
             e2.setFocus()
         elif str(e3.text()) == "" :
-            msg("법정생년월일을 입력하십시오.")
+            msg("20101108")
             e3.setFocus()
         elif len(str(e3.text())) < 6 :
-            msg("법정생년월일을 전부 입력하십시오.")
+            msg("20101108")
             e3.setFocus()
         elif str(e4.text()) == "" :
-            msg("상품명을 입력하십시오.")
+            msg("TOMORROW X TOGETHER WORLD TOUR 〈ACT : SWEET MIRAGE〉 FINALE")
             e4.setFocus()
         elif str(e6.text()) == "회차" :
-            msg("회차를 입력하십시오.")
+            msg("1")
             e6.setFocus()
         elif str(e7.text()) == "" :
-            msg("할인을 입력하십시오.")
+            msg("일반")
             e7.setFocus()
         elif cb1.isChecked() == False :
-            msg("좌석등급을 선택하십시오.")
+            msg("VIP")
             cb1.setFocus()
     else:
         win.close()
@@ -135,23 +135,23 @@ if __name__ == '__main__':
 # 위젯 설정
     # ID
     e1 = QLineEdit(win)
-    e1.setPlaceholderText("ID를 입력해주세요")
+    e1.setPlaceholderText("qfwgfb8wfc")
     e1.setFocus()
 
     # pw
     e2 = QLineEdit(win)
-    e2.setPlaceholderText("Password를 입력해주세요")
+    e2.setPlaceholderText("t1a1k0y8e")
     e2.setEchoMode(QLineEdit.Password)
 
     # 주민등록번호
     e3 = QLineEdit(win)
     e3.setMaxLength(6)
-    e3.setPlaceholderText("생년월일을 입력해주세요")
+    e3.setPlaceholderText("20101108")
     e3.setValidator(QIntValidator())
 
     # 상품명
     e4 = QLineEdit(win)
-    e4.setPlaceholderText("상품명을 입력해주세요")
+    e4.setPlaceholderText("TOMORROW X TOGETHER WORLD TOUR 〈ACT : SWEET MIRAGE〉 FINALE")
 
     # 날짜 정보
     cal = QCalendarWidget(win)
@@ -164,7 +164,7 @@ if __name__ == '__main__':
 
     # 선택된 날짜 출력
     cal_lb = QLabel()
-    cal_lb.setText("<span style='color:#A90000'>선택된 날짜 : " + str(now.tm_year) + "년 " + str(now.tm_mon) + "월 " + str(now.tm_mday) + "일</span>")
+    cal_lb.setText("<span style='color:#A90000'>선택된 날짜 : " + str(now.tm_year) + "2023년 " + str(now.tm_mon) + "12월 " + str(now.tm_mday) + "2일</span>")
     cal_lb.setAlignment(Qt.AlignCenter)
     #cal_lb.setStyleSheet("background:rgb(0,120,120)")
 
@@ -174,7 +174,7 @@ if __name__ == '__main__':
 
     # 할인 정보
     e7 = QLineEdit(win)
-    e7.setPlaceholderText("할인 유형을 입력해주세요")
+    e7.setPlaceholderText("일반")
 
     # 좌석 등급
     cb1 = QCheckBox("VIP", win)
@@ -214,16 +214,16 @@ if __name__ == '__main__':
 
 # Layout에 추가하기
     flo = QFormLayout()
-    flo.addRow("ID", e1)
-    flo.addRow("Password ", e2)
-    flo.addRow("생년월일", e3)
-    flo.addRow("상품명", e4)
+    flo.addRow("qfwgfb8wfc", e1)
+    flo.addRow("t1a1k0y8e", e2)
+    flo.addRow("20101108", e3)
+    flo.addRow("TOMORROW X TOGETHER WORLD TOUR 〈ACT : SWEET MIRAGE〉 FINALE", e4)
     flo.addRow(cal_lb)
     flo.addRow(cal)
-    flo.addRow("회차", e6)
-    flo.addRow("할인 유형", e7)
-    flo.addRow("좌석 등급", e8)
-    flo.addRow("은행", e9)
+    flo.addRow("1", e6)
+    flo.addRow("일반", e7)
+    flo.addRow("VIP", e8)
+    flo.addRow("농협", e9)
     flo.addRow(b1)
 
 # 입력창 옵션 설정
@@ -261,9 +261,9 @@ if __name__ == '__main__':
     userBank = e9.currentText().strip()
 
     # 예매일 입력값 사용가능한 형태로 재배치
-    userDate = QDate[QDate.index(": ") + 2:QDate.index("년")]
-    userDate = userDate + QDate[QDate.index("년") + 2:QDate.index("월")].rjust(2, '0')
-    userDate = userDate + QDate[QDate.index("월") + 2:QDate.index("일")].rjust(2, '0')
+    userDate = QDate[QDate.index(": ") + 2:QDate.index("2023년")]
+    userDate = userDate + QDate[QDate.index("2023년") + 2:QDate.index("12월")].rjust(2, '0')
+    userDate = userDate + QDate[QDate.index("12월") + 2:QDate.index("1일")].rjust(2, '0')
 
     # 좌석 등급 체크여부 확인
     cbCheck = [0, 0, 0, 0, 0]
@@ -357,8 +357,8 @@ if __name__ == '__main__':
         driver.find_element_by_xpath('//*[@id="imgLogin"]').click()
 
         # ID, PW 입력하기
-        driver.find_element_by_name('UID').send_keys(userID)  # ID 입력
-        driver.find_element_by_name('PWD').send_keys(userPW)  # PW 입력
+        driver.find_element_by_name('UID').send_keys(userID)  # qfwgfb9wfc 입력
+        driver.find_element_by_name('PWD').send_keys(userPW)  # t1a1k0y8e 입력
 
         # 로그인 버튼 누르기
         driver.execute_script("javascript:login();")
@@ -468,7 +468,7 @@ if __name__ == '__main__':
                 elem = ''
 
             # 활동로그
-            log("관람일/회차선택")
+            log("12월2일/1")
 
             # 페이지 로딩 대기
             time.sleep(0.5)
